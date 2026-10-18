@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>expo-cisco-anyconnect — social card</title>
+    <style>
+      /* 1200x630 social card. Rendered to ../assets/og.png by render.sh. */
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        width: 1200px;
+        height: 630px;
+        background: transparent;
+      }
+
+      .card {
+        position: relative;
+        width: 1200px;
+        height: 630px;
+        overflow: hidden;
+        background: #07090c;
+        font-family: -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', sans-serif;
+        color: #e8ecf2;
+      }
+
+      .glow {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(90px);
+      }
+
+      .glow--a {
+        width: 620px;
+        height: 620px;
+        top: -280px;
+        left: -160px;
+        background: rgba(34, 211, 238, 0.28);
+      }
+
+      .glow--b {
+        width: 560px;
+        height: 560px;
+        bottom: -300px;
+        left: 300px;
+        background: rgba(139, 92, 246, 0.24);
+      }
+
+      .grid {
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+        background-size: 48px 48px;
+        mask-image: radial-gradient(ellipse 80% 70% at 30% 40%, #000 20%, transparent 75%);
+      }
+
+      .content {
+        position: absolute;
+        left: 84px;
+        top: 96px;
+        width: 660px;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        padding: 7px 14px;
+        border-radius: 999px;
+        border: 1px solid rgba(34, 211, 238, 0.35);
+        background: rgba(34, 211, 238, 0.09);
+        color: #67e8f9;
+        font-size: 17px;
+        font-weight: 600;
+        letter-spacing: 0.2px;
+      }
+
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #22d3ee;
+      }
+
+      h1 {
+        margin: 30px 0 0;
+        font-size: 74px;
+        line-height: 1.02;
+        letter-spacing: -2.6px;
+        font-weight: 800;
+        background: linear-gradient(100deg, #ffffff 20%, #9be8f5 60%, #c4b5fd 95%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      p {
+        margin: 26px 0 0;
+        font-size: 27px;
+        line-height: 1.4;
+        color: #9aa7b8;
+        max-width: 620px;
+      }
+
+      .cmd {
+        margin-top: 34px;
+        display: inline-flex;
+        align-items: center;
+        gap: 14px;
+        padding: 16px 24px;
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: rgba(255, 255, 255, 0.055);
+        font-family: Menlo, ui-monospace, SFMono-Regular, monospace;
+        font-size: 21px;
+        color: #dbe4ef;
+      }
+
+      .cmd span {
+        color: #22d3ee;
+      }
+
+      .device {
+        position: absolute;
+        right: 74px;
+        top: 78px;
+        width: 421px;
+        height: 880px;
+        transform: scale(0.94);
+        transform-origin: top center;
+        filter: drop-shadow(0 40px 70px rgba(0, 0, 0, 0.65));
+      }
+
+      .device img {
+        width: 100%;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="glow glow--a"></div>
+      <div class="glow glow--b"></div>
+      <div class="grid"></div>
+
+      <div class="content">
+        <div class="eyebrow"><span class="dot"></span>Expo native module</div>
+        <h1>expo-cisco-<br />anyconnect</h1>
+        <p>Drive Cisco Secure Client from React Native — typed API, real connection results, no SDK.</p>
+        <div class="cmd"><span>$</span>npx expo install expo-cisco-anyconnect</div>
+      </div>
+
+      <div class="device">
+        <img src="../assets/android-connected.png" alt="" />
+      </div>
+    </div>
+  </body>
+</html>

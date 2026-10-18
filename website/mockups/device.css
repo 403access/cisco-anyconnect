@@ -1,0 +1,250 @@
+/*
+ * Source for the device mockups used on the marketing site.
+ *
+ * These are NOT device screenshots. They are HTML/CSS re-creations of the bundled example app
+ * (`example/App.tsx`), rendered to PNG by `render.sh`. Styling is transcribed from that component's
+ * StyleSheet so the result matches what the example actually renders.
+ *
+ * Regenerate with: ./render.sh
+ */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+}
+
+body {
+  width: 421px;
+  height: 880px;
+}
+
+/* ---------------------------------------------------------------- device shell */
+
+.device {
+  position: relative;
+  width: 421px;
+  height: 880px;
+  border-radius: 58px;
+  padding: 14px;
+  background: linear-gradient(160deg, #3a3d42 0%, #1b1d20 45%, #101113 100%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.device__buttons {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.device__buttons span {
+  position: absolute;
+  border-radius: 3px;
+  background: #23262a;
+}
+
+.device__buttons .power {
+  right: -2px;
+  top: 250px;
+  width: 3px;
+  height: 92px;
+}
+
+.device__buttons .vol-up {
+  left: -2px;
+  top: 196px;
+  width: 3px;
+  height: 56px;
+}
+
+.device__buttons .vol-down {
+  left: -2px;
+  top: 266px;
+  width: 3px;
+  height: 56px;
+}
+
+.screen {
+  position: relative;
+  width: 393px;
+  height: 852px;
+  border-radius: 44px;
+  overflow: hidden;
+  background: #f2f2f7;
+}
+
+/* ---------------------------------------------------------------- status bars */
+
+.statusbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: 600;
+  color: #000;
+}
+
+.statusbar--ios {
+  height: 59px;
+  padding: 0 34px 0 38px;
+  font-size: 15px;
+}
+
+.statusbar--android {
+  height: 34px;
+  padding: 0 22px 0 26px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.statusbar__right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.statusbar svg {
+  display: block;
+}
+
+/* iOS dynamic island */
+.island {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 122px;
+  height: 36px;
+  border-radius: 100px;
+  background: #000;
+}
+
+/* iOS home indicator */
+.home-indicator {
+  position: absolute;
+  bottom: 9px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 140px;
+  height: 5px;
+  border-radius: 100px;
+  background: rgba(0, 0, 0, 0.85);
+}
+
+/* ---------------------------------------------------------------- app (example/App.tsx) */
+
+.app {
+  height: 100%;
+  overflow: hidden;
+  background: #f2f2f7;
+  padding: 0 16px;
+  font-family: -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', sans-serif;
+  color: #000;
+}
+
+/* Mirrors SafeAreaView: content starts below the status bar. */
+.app--ios {
+  padding-top: 59px;
+}
+
+.app--android {
+  padding-top: 34px;
+}
+
+.app__content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px 0;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #6b7280;
+  letter-spacing: 0.2px;
+}
+
+.row {
+  font-size: 15px;
+  line-height: 20px;
+}
+
+.strong {
+  font-weight: 700;
+}
+
+.mono {
+  font-family: Menlo, ui-monospace, SFMono-Regular, monospace;
+  font-size: 12px;
+  line-height: 15px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.input {
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  font-size: 15px;
+  color: #111;
+  background: #fff;
+}
+
+.spacer {
+  height: 8px;
+}
+
+/* React Native's <Button> is filled on Android and plain text on iOS. */
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+.btn--android {
+  height: 36px;
+  border-radius: 2px;
+  background: #1e88e5;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+}
+
+.btn--ios {
+  height: 34px;
+  color: #007aff;
+  font-size: 17px;
+}

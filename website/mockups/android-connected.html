@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Example app — Android, connected</title>
+    <link rel="stylesheet" href="device.css" />
+  </head>
+  <body>
+    <!--
+      Mockup of the bundled example app (example/App.tsx) as it renders on Android after a
+      successful connection. Rendered to PNG by render.sh — not a device screenshot.
+    -->
+    <div class="device">
+      <div class="device__buttons">
+        <span class="vol-up"></span>
+        <span class="vol-down"></span>
+        <span class="power"></span>
+      </div>
+
+      <div class="screen">
+        <div class="statusbar statusbar--android">
+          <span>9:41</span>
+          <span class="statusbar__right">
+            <svg width="15" height="12" viewBox="0 0 15 12" fill="currentColor" aria-hidden="true">
+              <rect x="0" y="8" width="2.6" height="4" rx="0.8" />
+              <rect x="4" y="5.6" width="2.6" height="6.4" rx="0.8" />
+              <rect x="8" y="3" width="2.6" height="9" rx="0.8" />
+              <rect x="12" y="0" width="2.6" height="12" rx="0.8" opacity="0.4" />
+            </svg>
+            <svg
+              width="16"
+              height="12"
+              viewBox="0 0 16 12"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              aria-hidden="true"
+            >
+              <path d="M2 4.6a9.2 9.2 0 0 1 12 0" />
+              <path d="M4.5 7.1a5.7 5.7 0 0 1 7 0" />
+              <path d="M7 9.5a2.1 2.1 0 0 1 2 0" />
+            </svg>
+            <svg width="22" height="12" viewBox="0 0 22 12" aria-hidden="true">
+              <rect x="0.6" y="0.6" width="19" height="10.8" rx="3" fill="none" stroke="currentColor" stroke-opacity="0.45" />
+              <rect x="2.2" y="2.2" width="13" height="7.6" rx="1.6" fill="currentColor" />
+              <path d="M21 4.4v3.2a2 2 0 0 0 0-3.2z" fill="currentColor" fill-opacity="0.45" />
+            </svg>
+          </span>
+        </div>
+
+        <div class="app app--android">
+          <div class="app__content">
+            <div class="title">expo-cisco-anyconnect</div>
+
+            <div class="card">
+              <div class="row">AnyConnect installed: <span class="strong">true</span></div>
+              <div class="row">Tunnel state: <span class="strong">connected</span></div>
+              <div class="row">VPN transport up: <span class="strong">true</span></div>
+              <div class="row">Callbacks on: <span class="strong">ciscoanyconnectexample</span></div>
+              <div class="row">Platform: <span class="strong">android</span></div>
+            </div>
+
+            <div class="card">
+              <div class="label">Secure gateway</div>
+              <div class="input">vpn.example.com</div>
+              <div class="btn btn--android">Connect</div>
+              <div class="spacer"></div>
+              <div class="btn btn--android">Disconnect</div>
+              <div class="spacer"></div>
+              <div class="btn btn--android">Create connection entry</div>
+              <div class="spacer"></div>
+              <div class="btn btn--android">Refresh state</div>
+            </div>
+
+            <div class="card">
+              <div class="label">Last callback</div>
+              <div class="mono">{
+  "action": "connect",
+  "result": "success",
+  "url": "ciscoanyconnectexample://anyconnect/callback?action=connect&amp;result=success&amp;token=connect-m1x2n-1",
+  "token": "connect-m1x2n-1"
+}</div>
+              <div class="spacer"></div>
+              <div class="btn btn--android">Simulate a success callback</div>
+            </div>
+
+            <div class="card">
+              <div class="label">Log</div>
+              <div class="mono">9:41:02  AnyConnect 5.1.8.105 (com.cisco.anyconnect.vpn.android.avf)
+9:41:06  createConnection &#8594; {"dispatched":true,"action":"create"}
+9:41:11  connect &#8594; {"dispatched":true,"token":"connect-m1x2n-1"}
+9:41:19  callback connect/success</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
