@@ -1,0 +1,21 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <!-- Required to observe whether a VPN transport is up (see VpnStateObserver). -->
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+  <!--
+    Android 11+ hides packages from apps unless they are declared here. Without these entries the OS
+    reports that nothing handles `anyconnect://`, so availability detection and deep-link dispatch
+    would both silently fail.
+  -->
+  <queries>
+    <intent>
+      <action android:name="android.intent.action.VIEW" />
+      <data android:scheme="anyconnect" />
+    </intent>
+    <package android:name="com.cisco.anyconnect.vpn.android.avf" />
+    <package android:name="com.cisco.anyconnect.vpn.android" />
+    <package android:name="com.cisco.anyconnect.vpn.android.nodpi" />
+  </queries>
+
+</manifest>

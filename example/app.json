@@ -1,0 +1,29 @@
+{
+  "expo": {
+    "name": "expo-cisco-anyconnect-example",
+    "slug": "expo-cisco-anyconnect-example",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "scheme": "ciscoanyconnectexample",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "expo.modules.ciscoanyconnect.example"
+    },
+    "android": {
+      "package": "expo.modules.ciscoanyconnect.example"
+    },
+    "plugins": [
+      [
+        "expo-cisco-anyconnect",
+        {
+          "callbackScheme": "ciscoanyconnectexample"
+        }
+      ]
+    ],
+    "experiments": {
+      "autolinkingModuleResolution": true
+    }
+  }
+}
