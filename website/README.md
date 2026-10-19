@@ -69,8 +69,10 @@ npm install          # once
 npm run build        # renders all pages
 ```
 
-Run it after editing any Markdown file, and commit the regenerated HTML. CI rebuilds and fails if the
-committed output is stale, so the repository and the deployed site cannot diverge.
+> **After editing any Markdown file in this repository, run `npm run build` in `website/` and commit
+> the regenerated HTML.** The generated pages are committed, so editing a source without re-rendering
+> leaves the repository — and the deployment — inconsistent. `npm run check:docs` detects exactly this
+> and names the stale files; it is what CI runs first.
 
 ### Link rewriting
 
@@ -108,13 +110,21 @@ broken.
 
 ```sh
 cd website
-npm run check          # or: python3 check.py
+npm run verify         # the gate CI runs: docs current + every page valid
 node --check main.js   # JavaScript syntax
 ```
 
-`check.py` walks **every** HTML file — hand-written and generated — and verifies that each page has
-balanced tags, unique ids, that every local `href`/`src` exists, and that every `#fragment` resolves
-to an id in the target page. It also guards the hand-highlighted samples on the landing page.
+`npm run verify` runs two checks:
+
+- **`npm run check:docs`** — re-renders every page in memory and compares it with what is on disk. It
+  fails, naming the files, when a Markdown source was edited without re-rendering, or when a page in
+  `docs/` is orphaned because it is no longer listed in `PAGES`. It writes nothing.
+- **`npm run check`** — `check.py` walks every HTML file, hand-written and generated, and verifies
+  balanced tags, unique ids, that every local `href`/`src` exists, and that every `#fragment` resolves
+  to an id in the target page. It also guards the hand-highlighted samples on the landing page.
+
+Both run in CI before the deploy, so a stale render or a broken link fails the build instead of
+reaching the site.
 
 Beyond that: load the page, resize to phone width, click through the tabs, open the mobile nav, and
 confirm the console is clean.

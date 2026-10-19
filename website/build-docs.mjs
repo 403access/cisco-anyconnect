@@ -469,7 +469,14 @@ function docsIndex() {
 
 // ---------------------------------------------------------------------------- main
 
-fs.mkdirSync(OUT, { recursive: true });
+/**
+ * Every generated page, rendered but not yet written.
+ *
+ * Keeping this as data is what makes `--check` possible: the same render pass can either write the
+ * files or verify that what is on disk already matches, so the repository cannot silently drift
+ * away from its Markdown sources.
+ */
+const outputs = [];
 
 for (const page of PAGES) {
   const sourceAbs = path.join(REPO, page.source);
@@ -478,24 +485,67 @@ for (const page of PAGES) {
   }
 
   const { html, headings } = renderMarkdown(page.source, sourceAbs);
-  const output = path.join(OUT, page.output);
 
-  fs.writeFileSync(
-    output,
-    layout({
+  outputs.push({
+    label: `website/docs/${page.output}`,
+    path: path.join(OUT, page.output),
+    contents: layout({
       id: page.id,
       title: page.title,
-      // The document's own first paragraph is a better description than nothing; the blurb is a
-      // predictable alternative.
       description: page.blurb,
       body: html,
       headings,
-    })
-  );
-
-  console.log(`  ${page.source} → website/docs/${page.output}`);
+    }),
+  });
 }
 
-fs.writeFileSync(path.join(OUT, 'index.html'), docsIndex());
-console.log('  (index) → website/docs/index.html');
-console.log(`\nrendered ${PAGES.length + 1} pages`);
+outputs.push({
+  label: 'website/docs/index.html',
+  path: path.join(OUT, 'index.html'),
+  contents: docsIndex(),
+});
+
+const checkOnly = process.argv.includes('--check');
+
+if (checkOnly) {
+  const expected = new Set(outputs.map((output) => output.path));
+  const stale = outputs
+    .filter(
+      (output) =>
+        !fs.existsSync(output.path) ||
+        fs.readFileSync(output.path, 'utf8') !== output.contents
+    )
+    .map((output) => output.label);
+
+  const orphaned = fs.existsSync(OUT)
+    ? fs
+        .readdirSync(OUT)
+        .filter((name) => name.endsWith('.html'))
+        .map((name) => path.join(OUT, name))
+        .filter((absolute) => !expected.has(absolute))
+        .map((absolute) => `website/docs/${path.basename(absolute)}`)
+    : [];
+
+  if (stale.length > 0 || orphaned.length > 0) {
+    console.error('Generated documentation is out of date.\n');
+    for (const label of stale) {
+      console.error(`  stale:   ${label}`);
+    }
+    for (const label of orphaned) {
+      console.error(`  orphan:  ${label} (no longer generated)`);
+    }
+    console.error('\nRun `npm run build` and commit the result.');
+    process.exit(1);
+  }
+
+  console.log(`documentation is up to date (${outputs.length} pages)`);
+} else {
+  fs.mkdirSync(OUT, { recursive: true });
+
+  for (const output of outputs) {
+    fs.writeFileSync(output.path, output.contents);
+    console.log(`  ${output.label}`);
+  }
+
+  console.log(`\nrendered ${outputs.length} pages`);
+}

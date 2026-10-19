@@ -49,17 +49,21 @@ jobs:
         working-directory: website
         run: npm ci --no-audit --no-fund
 
-      - name: Render documentation
+      # Fails if the committed docs no longer match the Markdown they were rendered from, naming the
+      # stale files. Rendering happens here rather than being compared against a build in git, so the
+      # failure explains itself.
+      - name: Verify docs are up to date
         working-directory: website
-        run: npm run build
-
-      # Fail if the committed output is stale, so the repository and the site cannot diverge.
-      - name: Verify generated docs are up to date
-        run: git diff --exit-code -- website/docs
+        run: npm run check:docs
 
       - name: Check pages
         working-directory: website
-        run: python3 check.py
+        run: npm run check
+
+      # Produce the published artifact from source, so a deploy can never ship stale HTML.
+      - name: Render documentation
+        working-directory: website
+        run: npm run build
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
