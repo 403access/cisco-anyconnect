@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Unit tests for the `useAnyConnect` / `useAnyConnectCallback` hooks, via
+  `@testing-library/react-native`.
+
 ## 0.1.0
 
 Initial release.

@@ -420,7 +420,7 @@ The module contains none of Cisco's code, links no Cisco binaries, and ships no 
 ```sh
 npm install
 npm run build        # src → build/, plugin/src → plugin/build/
-npm test             # 44 tests: URI builders, callback parser, facade, config plugin
+npm test             # 53 tests: URI builders, callback parser, facade, hooks, config plugin
 npm run typecheck    # tsc over src + plugin/src, including tests
 npm run lint
 ```

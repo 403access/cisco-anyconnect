@@ -32,10 +32,10 @@
   "author": "Cisco AnyConnect Module <dev@example.com> (https://github.com/example)",
   "license": "MIT",
   "homepage": "https://github.com/example/expo-cisco-anyconnect#readme",
-  "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.26.0",
     "@react-native/jest-preset": "0.88.0",
+    "@testing-library/react-native": "^14.1.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^26.0.0",
     "@types/react": "~19.3.0",
