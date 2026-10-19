@@ -36,6 +36,26 @@ jobs:
       - name: Check out
         uses: actions/checkout@v4
 
+      # A project site can be pointed at a branch folder instead of this workflow. In that case the
+      # artifact is built, uploaded and "deployed" successfully, but GitHub serves its own legacy
+      # Jekyll build of that folder instead — which here means the repository's top-level docs/
+      # folder, and therefore a 404 at the root. That failure mode is silent, so check it up front.
+      - name: Require the Pages source to be GitHub Actions
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if ! build_type=$(gh api "repos/$GITHUB_REPOSITORY/pages" --jq .build_type 2>/dev/null); then
+            echo "::warning::Could not read the Pages configuration; skipping the source check."
+            exit 0
+          fi
+
+          echo "Pages build_type: $build_type"
+
+          if [ "$build_type" != "workflow" ]; then
+            echo "::error::GitHub Pages is publishing a branch (build_type='$build_type'), so this workflow's artifact is never served and the site 404s. Fix it in Settings → Pages → Source: choose 'GitHub Actions'."
+            exit 1
+          fi
+
       - name: Set up Node
         uses: actions/setup-node@v4
         with:

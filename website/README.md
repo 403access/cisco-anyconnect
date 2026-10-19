@@ -140,6 +140,21 @@ One-time setup, in the repository on GitHub:
 1. **Settings → Pages**
 2. **Source** → *GitHub Actions*
 
+### This setting is required, and the failure is silent
+
+A project site can be pointed at a branch folder instead of a workflow
+(**Deploy from a branch → `main` → `/docs`**). That is an easy mistake here, because this repository
+has a top-level `docs/` folder full of Markdown — but it is not the site.
+
+In that configuration GitHub runs its own Jekyll build and ignores the uploaded artifact, so:
+
+- `https://<owner>.github.io/<repo>/` returns **404** — there is no `index.html` inside `docs/`
+- `https://<owner>.github.io/<repo>/api.html` returns 200, rendering `docs/api.md` raw and unstyled
+- the run still looks green: `Configure Pages`, `Upload static site` and `Deploy` all report success
+
+If you see a 404 at the root while a deploy run succeeded, that is what happened. The workflow checks
+`build_type` before doing anything and fails with the instruction, rather than leaving you to guess.
+
 The site then appears at `https://<owner>.github.io/<repo>/` — for this repo,
 `https://403access.github.io/cisco-anyconnect/`, with the docs at `/docs/`.
 
