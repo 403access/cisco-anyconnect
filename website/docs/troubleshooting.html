@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Troubleshooting · expo-cisco-anyconnect</title>
+    <meta name="description" content="Symptom, cause, fix — plus a diagnostics dump." />
+    <meta name="theme-color" content="#07090c" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../styles.css" />
+    <link rel="stylesheet" href="../docs.css" />
+    <script defer src="../main.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header" data-header>
+      <div class="container site-header__inner">
+        <a class="brand" href="../index.html" aria-label="expo-cisco-anyconnect home">
+          <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true">
+  <defs><linearGradient id="brandGrad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#a78bfa"/>
+  </linearGradient></defs>
+  <rect width="32" height="32" rx="9" fill="url(#brandGrad)"/>
+  <path d="M16 7.4l6.4 2.9v5.4c0 3.9-2.6 7-6.4 8-3.8-1-6.4-4.1-6.4-8v-5.4L16 7.4z"
+        fill="none" stroke="#04121a" stroke-width="1.9" stroke-linejoin="round"/>
+  <path d="M13.3 15.9l2.1 2.1 3.5-4" fill="none" stroke="#04121a" stroke-width="1.9"
+        stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+          <span class="brand__text">expo-cisco-anyconnect</span>
+        </a>
+
+        <button class="nav-toggle" type="button" data-nav-toggle aria-expanded="false"
+          aria-controls="site-nav" aria-label="Toggle navigation"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+  stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+
+        <nav class="nav" id="site-nav" data-nav aria-label="Primary">
+          <a href="../index.html#capabilities">Capabilities</a>
+          <a href="../index.html#screenshots">Screenshots</a>
+          <a href="../index.html#usage">Usage</a>
+          <a href="index.html">Docs</a>
+          <a class="nav__cta" href="https://github.com/403access/cisco-anyconnect" target="_blank" rel="noreferrer noopener">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+  <path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.1-1.47-1.1-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2z"/>
+</svg>
+            GitHub
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <div class="container docs-shell">
+        <aside class="docs-sidebar">
+          <nav aria-label="Documentation">
+            <p class="docs-sidebar__group">Guide</p>
+        <ul>
+          <li><a href="readme.html">Overview</a></li>
+          <li><a href="api.html">API reference</a></li>
+          <li><a href="architecture.html">Architecture</a></li>
+          <li><a href="example.html">Example app</a></li>
+        </ul>
+        <p class="docs-sidebar__group">Platforms</p>
+        <ul>
+          <li><a href="android.html">Android guide</a></li>
+          <li><a href="ios.html">iOS guide</a></li>
+          <li><a href="config-plugin.html">Config plugin</a></li>
+          <li><a href="troubleshooting.html" aria-current="page" class="is-active">Troubleshooting</a></li>
+        </ul>
+        <p class="docs-sidebar__group">Project</p>
+        <ul>
+          <li><a href="development.html">Development</a></li>
+          <li><a href="contributing.html">Contributing</a></li>
+          <li><a href="changelog.html">Changelog</a></li>
+        </ul>
+          </nav>
+          <p class="docs-sidebar__back"><a href="../index.html">← Back to the project</a></p>
+        </aside>
+
+        <article class="prose" id="content">
+          <p class="docs-eyebrow">Documentation</p>
+          <h1 id="troubleshooting">Troubleshooting</h1>
+<p>Pair this with the platform guides: <a href="android.html">Android</a> · <a href="ios.html">iOS</a>.
+When reporting a problem, include the <a href="#diagnostics-dump">diagnostics dump</a> below.</p>
+<hr>
+<h2 id="connect-throws-no_handler"><code>connect()</code> throws <code>NO_HANDLER</code></h2>
+<p><em>&quot;expo-cisco-anyconnect: nothing handled the <code>connect</code> link.&quot;</em></p>
+<p>The URI was dispatched but no app claimed it. In order of likelihood:</p>
+<ol>
+<li><strong>Android — URI External Control is off.</strong> AnyConnect ignores external URIs unless its profile
+allows them. Set <code>vpn_setting_uri_external_control</code> to <code>prompted</code> or <code>enabled</code>. This is the most
+common cause by far, and it is invisible from your app: the intent is delivered and dropped.</li>
+<li><strong>AnyConnect is not actually installed</strong> on this device or profile. Confirm with
+<code>await CiscoAnyConnect.isInstalled()</code>.</li>
+<li><strong>Android — package visibility.</strong> On API 30+, <code>resolveActivity</code> returns <code>null</code> for undeclared
+packages. Keep the plugin's <code>androidQueries</code> enabled, or restore the library manifest's
+<code>&lt;queries&gt;</code> block. See <a href="android.html#package-visibility-android-11">Android § Package visibility</a>.</li>
+<li><strong>You are in Expo Go.</strong> The native module is absent; that raises <code>NATIVE_MODULE_UNAVAILABLE</code>
+instead. See <a href="#native_module_unavailable-in-expo-go">below</a>.</li>
+</ol>
+<pre><code class="language-ts">CiscoAnyConnect.addUrlResultListener((event) =&gt; {
+  if (!event.success) console.warn('dispatch failed:', event.url, event.error);
+});
+</code></pre>
+<hr>
+<h2 id="isinstalled-returns-false-but-anyconnect-is-installed"><code>isInstalled()</code> returns <code>false</code> but AnyConnect is installed</h2>
+<p><strong>On iOS</strong> this is nearly always the missing query scheme — <code>canOpenURL</code> is always <code>false</code> for
+undeclared schemes. Confirm the entry is present after a prebuild:</p>
+<pre><code class="language-sh">plutil -p ios/YourApp/Info.plist | grep -A3 LSApplicationQueriesSchemes
+</code></pre>
+<p>If it is absent, the plugin did not run: check it is listed in <code>app.json</code> <code>plugins</code>, and that you
+re-ran <code>npx expo prebuild --clean</code>. If your app is near the 50-entry query-scheme limit, trim the
+list; <code>connect()</code> still works with <code>querySchemes: []</code> because <code>openUrl</code> does not consult that list.</p>
+<p><strong>On Android</strong> it is package visibility. Check the merged manifest:</p>
+<pre><code class="language-sh">grep -A12 '&lt;queries&gt;' android/app/build/intermediates/merged_manifests/*/AndroidManifest.xml
+</code></pre>
+<p>An empty or missing block means something stripped it — see
+<a href="android.html#package-visibility-android-11">Android § Package visibility</a>.</p>
+<hr>
+<h2 id="callbacks-never-arrive">Callbacks never arrive</h2>
+<p><code>addCallbackListener</code> fires nothing, and the state stays at <code>connecting</code>.</p>
+<p>Work through these in order:</p>
+<ol>
+<li>
+<p><strong>Is a scheme configured?</strong> <code>CiscoAnyConnect.getCallbackScheme()</code> must print a string, not <code>false</code>.
+If it prints <code>false</code>, either your app config has no <code>scheme</code> or callbacks were disabled.</p>
+</li>
+<li>
+<p><strong>Is the scheme registered with the OS?</strong> iOS: <code>CFBundleURLTypes</code> in <code>Info.plist</code>. Android: a
+<code>VIEW</code> intent filter on the main activity. The plugin writes both; a prebuild is required.</p>
+</li>
+<li>
+<p><strong>Is the app actually resumed?</strong> iOS uses React Native's <code>Linking</code>. If your app has its own
+deep-link router that swallows URLs, either let the module see them first or disable auto-wiring
+and forward explicitly:</p>
+<pre><code class="language-ts">CiscoAnyConnect.configure({ autoWireDeepLinks: false });
+Linking.addEventListener('url', ({ url }) =&gt; {
+  if (!CiscoAnyConnect.handleCallbackUrl(url)) myRouter.navigate(url);
+});
+</code></pre>
+</li>
+<li>
+<p><strong>Did the connection actually succeed?</strong> AnyConnect opens <code>onerror</code> on failure, which is still a
+callback — check <code>event.result</code>.</p>
+</li>
+<li>
+<p><strong><code>closeOnSuccess: true</code> on iOS.</strong> This consumes the single <code>onsuccess</code> action, so a successful
+connect reports nothing. Failures still arrive. Drop <code>closeOnSuccess</code> if you need the event.</p>
+</li>
+</ol>
+<hr>
+<h2 id="the-state-sticks-at-connecting">The state sticks at <code>connecting</code></h2>
+<p>Either the connection is genuinely still in flight — SAML authentication inside AnyConnect keeps it
+open, and a slow headend does too — or the callback never came back (see above).</p>
+<p><code>connecting</code> is set the moment the URI is <em>dispatched</em> (<code>source: 'request'</code>), so it means &quot;asked&quot;,
+not &quot;in progress&quot;. If you need certainty, drive UI off the callback event and treat a timeout as
+failure:</p>
+<pre><code class="language-ts">const result = await CiscoAnyConnect.connect({ host });
+// then race a timeout against addCallbackListener if you need a hard deadline.
+</code></pre>
+<hr>
+<h2 id="state-is-connected-when-nothing-is-connected-android">State is <code>connected</code> when nothing is connected (Android)</h2>
+<p><code>getState()</code> on Android reports whether the system's active network has <code>TRANSPORT_VPN</code>. Another VPN
+app being active sets the same flag — there is no public API to attribute a tunnel to AnyConnect
+specifically. If you need per-attempt truth, use the callback event for the attempt you made.</p>
+<hr>
+<h2 id="state-flips-to-disconnected-right-after-connect-android">State flips to <code>disconnected</code> right after <code>connect()</code> (Android)</h2>
+<p>That is accurate, not a bug. The system VPN transport is not up yet during negotiation, and Android
+state is an observation rather than a request echo. The sequence is normally:
+<code>connecting</code> (<code>request</code>) → <code>connected</code> (<code>system</code>) once the tunnel is up.</p>
+<p>Note that <code>refresh()</code> is deliberately not called when the app returns to the foreground, precisely so
+this does not clobber an in-flight state. See
+<a href="architecture.html#state-machine">Architecture § State machine</a>.</p>
+<hr>
+<h2 id="the-state-is-always-unknown-ios">The state is always <code>unknown</code> (iOS)</h2>
+<p>Expected. iOS gives an app no way to observe another app's Tunnel Provider, and the module will not
+fake it with interface enumeration. Configure a callback scheme so the <code>onsuccess</code>/<code>onerror</code> URLs
+supply real transitions. Full rationale in
+<a href="ios.html#why-state-is-limited-on-ios">iOS § Why state is limited</a>.</p>
+<hr>
+<h2 id="native_module_unavailable-in-expo-go"><code>NATIVE_MODULE_UNAVAILABLE</code> in Expo Go</h2>
+<p>The module ships custom native code, so Expo Go cannot load it. Create a development build:</p>
+<pre><code class="language-sh">npx expo run:ios      # or: npx expo run:android
+</code></pre>
+<p>The error carries <code>code: 'NATIVE_MODULE_UNAVAILABLE'</code> so you can branch on it. Use the exported
+<code>isNativeModuleAvailable</code> boolean to render a fallback without catching:</p>
+<pre><code class="language-ts">import { isNativeModuleAvailable } from 'expo-cisco-anyconnect';
+
+if (!isNativeModuleAvailable) return &lt;Text&gt;VPN control needs a development build.&lt;/Text&gt;;
+</code></pre>
+<hr>
+<h2 id="plugin-changes-have-no-effect">Plugin changes have no effect</h2>
+<p>Native config is applied at prebuild, not on a Metro reload:</p>
+<pre><code class="language-sh">npx expo prebuild --clean
+npx expo run:ios
+</code></pre>
+<p>Also confirm the plugin is actually in <code>app.json</code> → <code>expo.plugins</code>, and that you are not relying on a
+stale <code>ios/</code> or <code>android/</code> directory from a previous prebuild.</p>
+<hr>
+<h2 id="importprofile-importcertificate-does-nothing"><code>importProfile</code> / <code>importCertificate</code> does nothing</h2>
+<p>AnyConnect fetches the URL <strong>itself</strong>, from the device. The URL must be reachable <em>on the device</em>, not
+on your development machine:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>URL</th>
+<th>Works?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>https://mdm.example.com/profile.xml</code></td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>file:///sdcard/profile.xml</code></td>
+<td>only if the file really exists on that device path</td>
+</tr>
+<tr>
+<td><code>http://localhost:8081/...</code></td>
+<td>no — that is the device's own loopback</td>
+</tr>
+</tbody>
+</table></div>
+<p><code>importCertificate</code> accepts PKCS#12 only; other certificate types are not supported by Cisco.</p>
+<hr>
+<h2 id="localize-does-nothing"><code>localize()</code> does nothing</h2>
+<p>All three parameters are required by Cisco (<code>type=localization</code>, <code>lang</code>, <code>host</code>), and the secure
+gateway must actually have a translation table for that language installed. If the gateway has none,
+AnyConnect falls back to its pre-packaged translations.</p>
+<hr>
+<h2 id="prefilled-credentials-do-not-appear">Prefilled credentials do not appear</h2>
+<p>Cisco applies <code>prefill_username</code> / <code>prefill_password</code> only in authentication configurations that
+support it, and documents the password field for use with a one-time-password headend. If the fields
+stay empty, check the tunnel group's authentication method before assuming a bug here.</p>
+<p>Reminder that this is worth getting right: prefilled passwords travel inside a URI handed to another
+app. Keep long-lived secrets out of it.</p>
+<hr>
+<h2 id="diagnostics-dump">Diagnostics dump</h2>
+<p>Paste this into a bug report — it captures nearly everything that can go wrong:</p>
+<pre><code class="language-ts">import { Platform } from 'react-native';
+import CiscoAnyConnect, { isNativeModuleAvailable } from 'expo-cisco-anyconnect';
+
+async function diagnostics() {
+  const report = {
+    platform: Platform.OS,
+    platformVersion: String(Platform.Version),
+    nativeModuleAvailable: isNativeModuleAvailable,
+    transport: CiscoAnyConnect.transportId,
+    callbackScheme: CiscoAnyConnect.getCallbackScheme(),
+    snapshot: CiscoAnyConnect.getState(),
+    installed: await CiscoAnyConnect.isInstalled(),
+    appInfo: await CiscoAnyConnect.getAppInfo(),
+  };
+  console.log(JSON.stringify(report, null, 2));
+  return report;
+}
+</code></pre>
+<p>For callback problems also log every URL the app receives:</p>
+<pre><code class="language-ts">CiscoAnyConnect.addUrlResultListener((event) =&gt; console.log('url result', event));
+CiscoAnyConnect.addCallbackListener((event) =&gt; console.log('callback', event));
+</code></pre>
+
+          <nav class="docs-pager" aria-label="Pagination"><a class="docs-pager__link docs-pager__link--prev" href="config-plugin.html">
+          <span class="docs-pager__label">Previous</span>
+          <span class="docs-pager__title">Config plugin</span>
+        </a><a class="docs-pager__link docs-pager__link--next" href="example.html">
+          <span class="docs-pager__label">Next</span>
+          <span class="docs-pager__title">Example app</span>
+        </a></nav>
+          <p class="docs-edit"><a href="https://github.com/403access/cisco-anyconnect/blob/main/docs/troubleshooting.md" target="_blank" rel="noreferrer noopener">Edit this page on GitHub</a></p>
+        </article>
+
+        <aside class="docs-toc" aria-label="On this page">
+          <p class="docs-toc__title">On this page</p>
+      <ul>
+        <li class="docs-toc__level-2"><a href="#connect-throws-no_handler" title="connect() throws NO_HANDLER">connect() throws NO_HANDLER</a></li>
+        <li class="docs-toc__level-2"><a href="#isinstalled-returns-false-but-anyconnect-is-installed" title="isInstalled() returns false but AnyConnect is installed">isInstalled() returns false but AnyConnect is installed</a></li>
+        <li class="docs-toc__level-2"><a href="#callbacks-never-arrive" title="Callbacks never arrive">Callbacks never arrive</a></li>
+        <li class="docs-toc__level-2"><a href="#the-state-sticks-at-connecting" title="The state sticks at connecting">The state sticks at connecting</a></li>
+        <li class="docs-toc__level-2"><a href="#state-is-connected-when-nothing-is-connected-android" title="State is connected when nothing is connected (Android)">State is connected when nothing is connected (Android)</a></li>
+        <li class="docs-toc__level-2"><a href="#state-flips-to-disconnected-right-after-connect-android" title="State flips to disconnected right after connect() (Android)">State flips to disconnected right after connect() (Android)</a></li>
+        <li class="docs-toc__level-2"><a href="#the-state-is-always-unknown-ios" title="The state is always unknown (iOS)">The state is always unknown (iOS)</a></li>
+        <li class="docs-toc__level-2"><a href="#native_module_unavailable-in-expo-go" title="NATIVE_MODULE_UNAVAILABLE in Expo Go">NATIVE_MODULE_UNAVAILABLE in Expo Go</a></li>
+        <li class="docs-toc__level-2"><a href="#plugin-changes-have-no-effect" title="Plugin changes have no effect">Plugin changes have no effect</a></li>
+        <li class="docs-toc__level-2"><a href="#importprofile-importcertificate-does-nothing" title="importProfile / importCertificate does nothing">importProfile / importCertificate does nothing</a></li>
+        <li class="docs-toc__level-2"><a href="#localize-does-nothing" title="localize() does nothing">localize() does nothing</a></li>
+        <li class="docs-toc__level-2"><a href="#prefilled-credentials-do-not-appear" title="Prefilled credentials do not appear">Prefilled credentials do not appear</a></li>
+        <li class="docs-toc__level-2"><a href="#diagnostics-dump" title="Diagnostics dump">Diagnostics dump</a></li>
+      </ul>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer__legal">
+          <span>
+            Not affiliated with, endorsed by, or sponsored by Cisco Systems, Inc. AnyConnect and Cisco
+            Secure Client are trademarks of Cisco Systems, Inc.
+          </span>
+          <span>MIT © <span data-year>2026</span></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

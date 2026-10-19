@@ -38,7 +38,7 @@ await CiscoAnyConnect.connect({ host: 'vpn.example.com' });
 | [Troubleshooting](docs/troubleshooting.md) | Symptom → cause → fix. |
 | [Development](DEVELOPMENT.md) | Build, test, native iteration, releasing. |
 | [Contributing](CONTRIBUTING.md) | Conventions and PR expectations. |
-| [Website](website/) | The static site — zero dependencies, no build step, plus how to deploy it. |
+| [Website](website/) | The static site, including these docs rendered from Markdown, and how to deploy it. |
 
 ## What this module does (and does not do)
 

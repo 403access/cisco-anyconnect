@@ -1,19 +1,44 @@
 # Website
 
-The project's static marketing site. **No build step, no dependencies, no framework** — plain HTML,
-CSS and a small amount of vanilla JavaScript, served as-is.
+The project's static site: a hand-written landing page plus documentation rendered from the
+repository's Markdown. Everything is served as plain files — **no framework and nothing to build at
+request time**.
+
+Two kinds of page:
+
+| | |
+| --- | --- |
+| `index.html` | Hand-written HTML/CSS/JS. |
+| `docs/*.html` | **Generated** from the Markdown in this repository by `build-docs.mjs`. The output is committed. |
 
 ```
 website/
-├── index.html              the whole page
-├── styles.css              design system + layout
-├── main.js                 tabs, copy buttons, mobile nav, reveal (progressive enhancement)
+├── index.html                 landing page
+├── styles.css                 design system + layout (shared by both page kinds)
+├── docs.css                   prose typography and the docs shell
+├── main.js                    tabs, copy buttons, mobile nav, reveal
 ├── favicon.svg
-├── assets/                 generated images (committed)
+├── build-docs.mjs             Markdown → docs/*.html
+├── check.py                   validates every page
+├── package.json               one dev dependency: markdown-it
+├── assets/                    generated images (committed)
 │   ├── android-connected.{png,webp}
 │   ├── ios-callback-error.{png,webp}
 │   └── og-card.{png,webp}
-└── mockups/                sources for the images above
+├── docs/                      generated documentation pages (committed)
+│   ├── index.html             documentation home
+│   ├── readme.html
+│   ├── api.html
+│   ├── architecture.html
+│   ├── android.html
+│   ├── ios.html
+│   ├── config-plugin.html
+│   ├── troubleshooting.html
+│   ├── example.html
+│   ├── development.html
+│   ├── contributing.html
+│   └── changelog.html
+└── mockups/                   sources for the images in assets/
     ├── device.css
     ├── android-connected.html
     ├── ios-callback-error.html
@@ -23,63 +48,116 @@ website/
 
 ## Preview
 
-Any static file server works. From this directory:
+Any static file server works:
 
 ```sh
 python3 -m http.server 8000
 # → http://localhost:8000
 ```
 
-Opening `index.html` directly with `file://` also works — the page uses no modules, fetch calls or
-absolute root paths.
+Opening `index.html` directly with `file://` works too — no modules, no `fetch`, no absolute root
+paths. (The docs pages are pre-rendered rather than loaded client-side for exactly this reason.)
+
+## Documentation pipeline
+
+The Markdown files in the repository are the single source of truth. `build-docs.mjs` renders them
+into `website/docs/`:
+
+```sh
+cd website
+npm install          # once
+npm run build        # renders all pages
+```
+
+Run it after editing any Markdown file, and commit the regenerated HTML. CI rebuilds and fails if the
+committed output is stale, so the repository and the deployed site cannot diverge.
+
+### Link rewriting
+
+Markdown links are rewritten per target, which is what makes the published docs navigable:
+
+| Link in Markdown | Becomes |
+| --- | --- |
+| `./api.md`, `../README.md#state-semantics` | `api.html`, `readme.html#state-semantics` (anchor preserved) |
+| `src/uri.ts`, `../LICENSE`, `website/` | a GitHub `blob` / `tree` URL — a static page cannot serve a `.ts` file or a directory |
+| `https://www.cisco.com/…` | unchanged, with `target="_blank" rel="noreferrer noopener"` |
+| `#state-semantics` | unchanged (same page) |
+
+Heading anchors are generated with GitHub's slug rules, so links written against GitHub keep working.
+
+Anything that cannot be resolved is reported as a warning during the build rather than silently left
+broken.
+
+### Adding a document
+
+1. Write the Markdown in the repository (`docs/*.md` is the convention).
+2. Add an entry to `PAGES` in `build-docs.mjs` — `source`, `id`, `title`, `blurb`, `group`. The order
+   of that array drives the sidebar and the prev/next pager.
+3. `npm run build`, then `npm run check`.
+
+### Rendering notes
+
+- GFM tables are wrapped in a scroll container, matching the hand-written pages.
+- Task lists (`- [ ]`) become real checkboxes.
+- Mermaid blocks cannot be drawn without shipping a JS library, so they are rendered as captioned
+  source rather than as a broken code sample.
+- Code is not syntax highlighted; `markdown-it` alone has no highlighter and the site avoids adding
+  one.
+
+## Checking your change
+
+```sh
+cd website
+npm run check          # or: python3 check.py
+node --check main.js   # JavaScript syntax
+```
+
+`check.py` walks **every** HTML file — hand-written and generated — and verifies that each page has
+balanced tags, unique ids, that every local `href`/`src` exists, and that every `#fragment` resolves
+to an id in the target page. It also guards the hand-highlighted samples on the landing page.
+
+Beyond that: load the page, resize to phone width, click through the tabs, open the mobile nav, and
+confirm the console is clean.
 
 ## Deploying
 
-The repository ships `.github/workflows/pages.yml`, which publishes this directory to GitHub Pages on
-every push to `main` that touches `website/**`.
+`.github/workflows/pages.yml` installs the site's dependencies, renders the docs, verifies the
+committed output is current, runs `check.py`, and publishes `website/` to GitHub Pages on any change
+to `website/**`, the Markdown sources, or the workflow itself.
 
 One-time setup, in the repository on GitHub:
 
 1. **Settings → Pages**
 2. **Source** → *GitHub Actions*
 
-After that, pushes deploy automatically and the site appears at
-`https://<owner>.github.io/<repo>/` — for this repo, `https://403access.github.io/cisco-anyconnect/`.
+The site then appears at `https://<owner>.github.io/<repo>/` — for this repo,
+`https://403access.github.io/cisco-anyconnect/`, with the docs at `/docs/`.
 
-Any other static host (Netlify, Cloudflare Pages, S3, nginx) works too: publish the `website/`
-directory and nothing else.
+Any other static host works too: render the docs, publish `website/`, done. Netlify, Cloudflare Pages
+and friends do not need a build command beyond `cd website && npm ci && npm run build` with
+`website` as the publish directory.
 
 ### If the URL changes
 
-`index.html` hardcodes absolute URLs for the canonical link and social card. Update these three places
-if you deploy elsewhere or add a custom domain:
+`index.html` and `build-docs.mjs` hardcode absolute URLs. Update:
 
-- `<link rel="canonical">`
-- `og:url` / `og:image`
-- `twitter:image`
-
-The outbound links to GitHub and the docs use absolute repository URLs
-(`https://github.com/403access/cisco-anyconnect/…`). If the repository moves, update them in
-`index.html` (nav, docs grid, footer).
+- the canonical link, `og:url`, `og:image` and `twitter:image` in `index.html`
+- `GITHUB` in `build-docs.mjs` (used for source links and the "edit this page" links), then re-render
+- the `GITHUB` constant in `mockups/og-card.html` if the social card mentions a repo
 
 ## Regenerating the images
 
-The screenshots and the social card are rendered from HTML/CSS by a script. Requirements: Google
-Chrome and ImageMagick (`magick`).
+The screenshots and social card are rendered from HTML/CSS. Requirements: Google Chrome and
+ImageMagick (`magick`).
 
 ```sh
 cd mockups
 ./render.sh
+# or: CHROME=/path/to/chrome ./render.sh
 ```
 
-Override the browser path if needed:
-
-```sh
-CHROME=/path/to/chrome ./render.sh
-```
-
-The script writes `assets/*.png`, then optimises them and emits WebP siblings. Both formats are
-committed; `index.html` uses `<picture>` with the PNG as the fallback.
+The script writes `assets/*.png`, optimises them and emits WebP siblings. Both formats are committed;
+`index.html` uses `<picture>` with the PNG as the fallback.
 
 ### About these images
 
@@ -88,46 +166,31 @@ faithful re-creations of the bundled example app (`example/App.tsx`): the stylin
 transcribed from that component's `StyleSheet`, and the status bars, device chrome and displayed
 values are mock data.
 
-The site labels them as rendered mockups in the screenshots section, and the images should keep that
-label if they are reused. Do not present them as captures of a real device or a live VPN session.
+The site labels them as rendered mockups in the screenshots section, and they should keep that label
+if reused. Do not present them as captures of a real device or a live VPN session.
 
 The iOS mockup intentionally shows `VPN transport up: null` — that is the documented iOS behaviour,
 not a rendering mistake.
 
 ## Editing content
 
-- **Copy, sections, links:** `index.html`, one file, top to bottom in page order.
-- **Code samples:** search for `id="code-` — each sample is hand-highlighted with `tk-*` spans. Only
-  `<span>` elements belong inside a highlighted `<code>` block; the site checker enforces this.
-- **Docs links:** they point at the repository's `docs/` and `README.md` rather than duplicating the
-  text, so documentation has a single source of truth.
-- **Design tokens:** `:root` in `styles.css` holds the palette, spacing scale and font stacks.
+- **Landing page copy, sections, links:** `index.html`, in page order.
+- **Documentation:** the Markdown files in the repository, never `website/docs/*.html` (they are
+  overwritten).
+- **Code samples on the landing page:** search for `id="code-` — each is hand-highlighted with `tk-*`
+  spans, and only `<span>` elements may appear inside one. `check.py` enforces this.
+- **Design tokens:** `:root` in `styles.css` — palette, spacing scale, font stacks. `docs.css` layers
+  prose typography on top and duplicates no colours.
 
 ## Constraints worth preserving
 
 - **No external requests.** No CDN, no web fonts, no analytics, no tracker. System fonts only.
 - **Progressive enhancement.** With JavaScript disabled, all content is visible and readable; the
-  reveal animation and tabs are additive. `main.js` never hides anything it cannot show again.
-- **Reduced motion** is respected: `prefers-reduced-motion: reduce` disables the reveal animation
-  entirely.
+  reveal animation and tab switching are additive. `main.js` never hides anything it cannot show
+  again.
+- **Reduced motion** is respected: `prefers-reduced-motion: reduce` disables the reveal animation.
 - **Accessibility.** Skip link, semantic landmarks, real `role="tablist"` semantics with arrow-key
-  navigation, visible focus rings, and captions/labels on images.
-- **Honesty.** Claims on the page mirror the README: this is a controller, not a tunnel, and it is not
-  affiliated with Cisco.
-
-## Checking your change
-
-No test runner is needed for a static page, but two checks catch most mistakes:
-
-```sh
-python3 check.py     # tag balance, local asset references, duplicate/dangling ids
-node --check main.js # JavaScript syntax
-```
-
-`check.py` walks `index.html` and verifies that every local `href`/`src` resolves to a file, that
-every `aria-controls` and `data-copy` points at a real `id`, that `id`s are unique, and that
-highlighted code blocks contain nothing but `tk-*` spans.
-
-Beyond that: load the page, resize to phone width, click through the tabs, open the mobile nav, and
-confirm the console is clean. With no framework between your markup and the browser, anything broken
-is visible immediately.
+  navigation, visible focus rings, labelled images, and a docs sidebar marked with
+  `aria-current="page"`.
+- **Honesty.** Everything on the page mirrors the README: this is a controller, not a tunnel, and it is
+  not affiliated with Cisco.

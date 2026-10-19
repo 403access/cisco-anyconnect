@@ -1128,6 +1128,14 @@ th code {
   margin-bottom: 0;
 }
 
+/* Centred row of calls to action, used under the docs grid. */
+.section__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+
 /* ------------------------------------------------------------------ reveal */
 
 @media (prefers-reduced-motion: no-preference) {

@@ -1,0 +1,705 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>API reference · expo-cisco-anyconnect</title>
+    <meta name="description" content="Every function, option, event payload, type and error code." />
+    <meta name="theme-color" content="#07090c" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../styles.css" />
+    <link rel="stylesheet" href="../docs.css" />
+    <script defer src="../main.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header" data-header>
+      <div class="container site-header__inner">
+        <a class="brand" href="../index.html" aria-label="expo-cisco-anyconnect home">
+          <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true">
+  <defs><linearGradient id="brandGrad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#a78bfa"/>
+  </linearGradient></defs>
+  <rect width="32" height="32" rx="9" fill="url(#brandGrad)"/>
+  <path d="M16 7.4l6.4 2.9v5.4c0 3.9-2.6 7-6.4 8-3.8-1-6.4-4.1-6.4-8v-5.4L16 7.4z"
+        fill="none" stroke="#04121a" stroke-width="1.9" stroke-linejoin="round"/>
+  <path d="M13.3 15.9l2.1 2.1 3.5-4" fill="none" stroke="#04121a" stroke-width="1.9"
+        stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+          <span class="brand__text">expo-cisco-anyconnect</span>
+        </a>
+
+        <button class="nav-toggle" type="button" data-nav-toggle aria-expanded="false"
+          aria-controls="site-nav" aria-label="Toggle navigation"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+  stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+
+        <nav class="nav" id="site-nav" data-nav aria-label="Primary">
+          <a href="../index.html#capabilities">Capabilities</a>
+          <a href="../index.html#screenshots">Screenshots</a>
+          <a href="../index.html#usage">Usage</a>
+          <a href="index.html">Docs</a>
+          <a class="nav__cta" href="https://github.com/403access/cisco-anyconnect" target="_blank" rel="noreferrer noopener">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+  <path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.1-1.47-1.1-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2z"/>
+</svg>
+            GitHub
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <div class="container docs-shell">
+        <aside class="docs-sidebar">
+          <nav aria-label="Documentation">
+            <p class="docs-sidebar__group">Guide</p>
+        <ul>
+          <li><a href="readme.html">Overview</a></li>
+          <li><a href="api.html" aria-current="page" class="is-active">API reference</a></li>
+          <li><a href="architecture.html">Architecture</a></li>
+          <li><a href="example.html">Example app</a></li>
+        </ul>
+        <p class="docs-sidebar__group">Platforms</p>
+        <ul>
+          <li><a href="android.html">Android guide</a></li>
+          <li><a href="ios.html">iOS guide</a></li>
+          <li><a href="config-plugin.html">Config plugin</a></li>
+          <li><a href="troubleshooting.html">Troubleshooting</a></li>
+        </ul>
+        <p class="docs-sidebar__group">Project</p>
+        <ul>
+          <li><a href="development.html">Development</a></li>
+          <li><a href="contributing.html">Contributing</a></li>
+          <li><a href="changelog.html">Changelog</a></li>
+        </ul>
+          </nav>
+          <p class="docs-sidebar__back"><a href="../index.html">← Back to the project</a></p>
+        </aside>
+
+        <article class="prose" id="content">
+          <p class="docs-eyebrow">Documentation</p>
+          <h1 id="api-reference">API reference</h1>
+<p>Everything exported from <code>expo-cisco-anyconnect</code>. See the <a href="readme.html">README</a> for setup and the
+<a href="android.html">Android</a> / <a href="ios.html">iOS</a> guides for platform behaviour.</p>
+<pre><code class="language-ts">import CiscoAnyConnect, {
+  CiscoAnyConnectError,
+  UriHandlerTransport,
+  useAnyConnect,
+  useAnyConnectCallback,
+  // low-level helpers
+  buildConnectUri,
+  parseCallbackUrl,
+  isNativeModuleAvailable,
+} from 'expo-cisco-anyconnect';
+</code></pre>
+<p><code>CiscoAnyConnect</code> is a module-level singleton; the default export is the same object.</p>
+<hr>
+<h2 id="configureoptions"><code>configure(options?)</code></h2>
+<p>Must be called as early as possible — ideally at module scope, before the first <code>connect</code> — because
+it decides the callback scheme that connection results are routed to.</p>
+<pre><code class="language-ts">CiscoAnyConnect.configure({
+  callbackScheme: 'myapp',
+  autoWireDeepLinks: true,
+});
+</code></pre>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>callbackScheme</code></td>
+<td><code>string | false</code></td>
+<td>auto-detected</td>
+<td>Deep-link scheme AnyConnect opens to report a <code>connect</code>/<code>disconnect</code> outcome. <code>false</code> disables callbacks entirely.</td>
+</tr>
+<tr>
+<td><code>autoWireDeepLinks</code></td>
+<td><code>boolean</code></td>
+<td><code>true</code></td>
+<td>Subscribe to React Native's <code>Linking</code> and <code>AppState</code> so callbacks arrive without manual wiring.</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Auto-detection.</strong> When <code>callbackScheme</code> is omitted, the module reads the custom URL schemes your
+app has registered — <code>CFBundleURLTypes</code> from <code>Info.plist</code> on iOS, your own intent filters on Android
+— and prefers one matching <code>/anyconnect|secureclient|vpn/i</code>, otherwise the first non-<code>http(s)</code>
+scheme. In development a warning is logged when nothing is found.</p>
+<p>Passing a scheme is idempotent and takes effect immediately, so calling <code>configure</code> again later (for
+example after a login flow) is safe.</p>
+<p>Calling <code>configure</code> with explicit options replaces the previous options; there is no merge.</p>
+<hr>
+<h2 id="transport">Transport</h2>
+<h3 id="settransporttransport"><code>setTransport(transport)</code></h3>
+<p>Replaces the active transport. <code>dispose()</code> is called on the outbound transport. See
+<a href="architecture.html#the-transport-seam">Architecture § The transport seam</a>.</p>
+<h3 id="transportid-string"><code>transportId: string</code></h3>
+<p>Identifier of the active transport. <code>'uriHandler'</code> out of the box.</p>
+<hr>
+<h2 id="availability">Availability</h2>
+<h3 id="isinstalled-promiseboolean"><code>isInstalled(): Promise&lt;boolean&gt;</code></h3>
+<p>Whether a handler for <code>anyconnect://</code> exists on the device. Resolves <code>false</code> (rather than throwing)
+when the native module is missing.</p>
+<ul>
+<li><strong>Android</strong> — resolves the <code>anyconnect://</code> intent, then falls back to the known AnyConnect package
+names.</li>
+<li><strong>iOS</strong> — <code>UIApplication.canOpenURL</code>, which requires <code>anyconnect</code> in <code>LSApplicationQueriesSchemes</code>.
+The <a href="config-plugin.html">config plugin</a> adds it.</li>
+</ul>
+<h3 id="getappinfo-promiseanyconnectappinfo-null"><code>getAppInfo(): Promise&lt;AnyConnectAppInfo | null&gt;</code></h3>
+<p>Returns metadata for the installed client, or <code>null</code> when it is not installed.</p>
+<pre><code class="language-ts">interface AnyConnectAppInfo {
+  platform: 'android' | 'ios';
+  packageName: string;
+  versionName: string | null;
+  versionCode: number | null;
+  appName: string | null;
+  source: 'package' | 'intentHandler';
+}
+</code></pre>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Android</th>
+<th>iOS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>packageName</code></td>
+<td>Resolved package, e.g. <code>com.cisco.anyconnect.vpn.android.avf</code></td>
+<td>Always <code>com.cisco.anyconnect</code> — iOS does not expose the bundle id that owns a scheme</td>
+</tr>
+<tr>
+<td><code>versionName</code> / <code>versionCode</code></td>
+<td>From <code>PackageManager</code></td>
+<td><code>null</code> (another app's metadata is unreadable)</td>
+</tr>
+<tr>
+<td><code>appName</code></td>
+<td>Application label</td>
+<td><code>'Cisco Secure Client'</code></td>
+</tr>
+<tr>
+<td><code>source</code></td>
+<td><code>intentHandler</code> when the package resolved the scheme, else <code>package</code></td>
+<td><code>intentHandler</code></td>
+</tr>
+</tbody>
+</table></div>
+<hr>
+<h2 id="actions">Actions</h2>
+<p>All actions resolve to an <code>AnyConnectDispatchResult</code>:</p>
+<pre><code class="language-ts">interface AnyConnectDispatchResult {
+  url: string;        // exact URI handed to AnyConnect
+  dispatched: boolean; // the OS accepted it
+  action: string;      // 'connect', 'disconnect', ...
+  token?: string;      // echoed back on the callback event
+}
+</code></pre>
+<h3 id="createconnectionoptions-promiseanyconnectdispatchresult"><code>createConnection(options): Promise&lt;AnyConnectDispatchResult&gt;</code></h3>
+<p>Adds a connection entry without connecting. <strong>Requires <code>name</code> and <code>host</code></strong>; throws
+<code>INVALID_ARGUMENTS</code> otherwise.</p>
+<h3 id="connectoptions-promiseanyconnectdispatchresult"><code>connect(options): Promise&lt;AnyConnectDispatchResult&gt;</code></h3>
+<p>Starts a tunnel. Requires <code>host</code>, or <code>name</code> when a matching entry already exists on the device.</p>
+<p>AnyConnect creates the connection entry on the fly if all parameters do not match an existing one.
+When a callback scheme is available, <code>onsuccess</code> and <code>onerror</code> are pointed back at your app.</p>
+<h3 id="disconnect-promiseanyconnectdispatchresult"><code>disconnect(): Promise&lt;AnyConnectDispatchResult&gt;</code></h3>
+<p>Tears the tunnel down. The <code>onsuccess</code> action is only appended on Android, because that is the only
+platform Cisco supports it on for this action.</p>
+<h3 id="importprofileurl-promiseanyconnectdispatchresult"><code>importProfile(url): Promise&lt;AnyConnectDispatchResult&gt;</code></h3>
+<p>Imports an AnyConnect client profile (XML). <code>url</code> must be reachable <strong>from the device</strong> —
+AnyConnect fetches it itself, so <code>file://</code> paths and LAN/<code>localhost</code> URLs only work where the device
+can actually read them.</p>
+<h3 id="importcertificateoptions-promiseanyconnectdispatchresult"><code>importCertificate(options): Promise&lt;AnyConnectDispatchResult&gt;</code></h3>
+<pre><code class="language-ts">interface AnyConnectImportCertificateOptions {
+  uri: string; // PKCS#12 bundle; Cisco supports no other type
+}
+</code></pre>
+<h3 id="localizeoptions-promiseanyconnectdispatchresult"><code>localize(options): Promise&lt;AnyConnectDispatchResult&gt;</code></h3>
+<pre><code class="language-ts">interface AnyConnectLocalizeOptions {
+  lang: string; // 'fr' or 'fr-ca'
+  host: string; // secure gateway to pull the translation table from
+}
+</code></pre>
+<h3 id="closegui-promiseanyconnectdispatchresult"><code>closeGui(): Promise&lt;AnyConnectDispatchResult&gt;</code></h3>
+<p>iOS only. Dismisses the AnyConnect UI. On other platforms it resolves
+<code>{ dispatched: false }</code> instead of throwing, because the AnyConnect GUI closes itself after a
+connect attempt settles.</p>
+<h3 id="anyconnectconnectionoptions"><code>AnyConnectConnectionOptions</code></h3>
+<p>Shared by <code>createConnection</code> and <code>connect</code>.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Type</th>
+<th>Platform</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>both</td>
+<td>Connection entry label (the <em>Description</em> field). Case-sensitive; Cisco recommends ≤ 24 characters.</td>
+</tr>
+<tr>
+<td><code>host</code></td>
+<td><code>string</code></td>
+<td>both</td>
+<td>FQDN, IP address, or Group URL of the secure gateway.</td>
+</tr>
+<tr>
+<td><code>protocol</code></td>
+<td><code>'SSL' | 'IPsec'</code></td>
+<td>both</td>
+<td>Tunnel protocol. Defaults to <code>SSL</code>.</td>
+</tr>
+<tr>
+<td><code>authentication</code></td>
+<td><code>AnyConnectAuthMode</code></td>
+<td>both</td>
+<td>IPsec only: <code>'EAP-AnyConnect'</code>, <code>'EAP-GTC'</code>, <code>'EAP-MD5'</code>, <code>'EAP-MSCHAPv2'</code>, <code>'IKE-RSA'</code>.</td>
+</tr>
+<tr>
+<td><code>ikeIdentity</code></td>
+<td><code>string</code></td>
+<td>both</td>
+<td>Required when <code>authentication</code> is <code>EAP-GTC</code>, <code>EAP-MD5</code> or <code>EAP-MSCHAPv2</code>.</td>
+</tr>
+<tr>
+<td><code>keychainAlias</code></td>
+<td><code>string</code></td>
+<td>Android</td>
+<td>Certificate in the system store to copy into the AnyConnect store and bind to the entry.</td>
+</tr>
+<tr>
+<td><code>useCert</code></td>
+<td><code>boolean</code></td>
+<td>both</td>
+<td>Allow automatic client-certificate selection. Defaults to <code>true</code>.</td>
+</tr>
+<tr>
+<td><code>certCommonName</code></td>
+<td><code>string</code></td>
+<td>both</td>
+<td>Common Name of the certificate to bind. Requires <code>useCert</code>.</td>
+</tr>
+<tr>
+<td><code>netRoam</code></td>
+<td><code>boolean</code></td>
+<td>iOS</td>
+<td><code>true</code> optimises for a sustained connection, <code>false</code> for battery life.</td>
+</tr>
+<tr>
+<td><code>useOnDemand</code></td>
+<td><code>boolean</code></td>
+<td>iOS</td>
+<td>Allow Connect On-Demand.</td>
+</tr>
+<tr>
+<td><code>domainListAlways</code></td>
+<td><code>string[]</code></td>
+<td>iOS</td>
+<td>Domains that may bring the tunnel up. Requires <code>useOnDemand</code>.</td>
+</tr>
+<tr>
+<td><code>domainListIfNeeded</code></td>
+<td><code>string[]</code></td>
+<td>iOS</td>
+<td>Domains that bring it up after a DNS failure. Requires <code>useOnDemand</code>.</td>
+</tr>
+<tr>
+<td><code>domainListNever</code></td>
+<td><code>string[]</code></td>
+<td>iOS</td>
+<td>Domains that must not bring it up. Requires <code>useOnDemand</code>.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="anyconnectconnectoptions"><code>AnyConnectConnectOptions</code></h3>
+<p>Extends the above.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>username</code></td>
+<td><code>string</code></td>
+<td>Prefilled username.</td>
+</tr>
+<tr>
+<td><code>password</code></td>
+<td><code>string</code></td>
+<td>Prefilled <strong>one-time</strong> password — see the warning below.</td>
+</tr>
+<tr>
+<td><code>secondaryUsername</code></td>
+<td><code>string</code></td>
+<td>Second username for double authentication.</td>
+</tr>
+<tr>
+<td><code>secondaryPassword</code></td>
+<td><code>string</code></td>
+<td>Second one-time password.</td>
+</tr>
+<tr>
+<td><code>group</code></td>
+<td><code>string</code></td>
+<td>Connection profile / group alias.</td>
+</tr>
+<tr>
+<td><code>onSuccess</code></td>
+<td><code>string</code></td>
+<td>Override the success callback URL.</td>
+</tr>
+<tr>
+<td><code>onError</code></td>
+<td><code>string</code></td>
+<td>Override the failure callback URL.</td>
+</tr>
+<tr>
+<td><code>closeOnSuccess</code></td>
+<td><code>boolean</code></td>
+<td>iOS only: close the AnyConnect GUI on success.</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>Never prefill a long-lived password.</strong> The URI is handed to the AnyConnect app and can surface in
+device logs. Cisco documents <code>prefill_password</code> for use &quot;only in conjunction with a One Time
+Password (OTP) infrastructure&quot;. Prefer certificate-based authentication or let the user type the
+secret into AnyConnect.</p>
+</blockquote>
+<blockquote>
+<p><strong><code>closeOnSuccess</code> vs the success callback.</strong> iOS accepts a single <code>onsuccess</code> action, so
+<code>closeOnSuccess</code> takes precedence and no success event fires. Failures are still reported through
+<code>onerror</code>.</p>
+</blockquote>
+<blockquote>
+<p><strong>Explicit <code>onSuccess</code> / <code>onError</code> disable the automatic callbacks</strong> for that call. If you set
+only one of them, the other is still filled in for you.</p>
+</blockquote>
+<hr>
+<h2 id="state">State</h2>
+<h3 id="getstate-anyconnectstatesnapshot"><code>getState(): AnyConnectStateSnapshot</code></h3>
+<p>Synchronous last-known snapshot. Never throws.</p>
+<pre><code class="language-ts">interface AnyConnectStateSnapshot {
+  state: AnyConnectState;
+  vpnTransportActive: boolean | null;
+  anyConnectInstalled: boolean;
+}
+
+type AnyConnectState = 'disconnected' | 'connecting' | 'connected' | 'disconnecting' | 'unknown';
+</code></pre>
+<h3 id="refresh-promiseanyconnectstatesnapshot"><code>refresh(): Promise&lt;AnyConnectStateSnapshot&gt;</code></h3>
+<p>Reads the platform again and notifies listeners when something changed.</p>
+<ul>
+<li>It also refreshes <code>anyConnectInstalled</code> via <code>isInstalled()</code>.</li>
+<li>A native <code>state</code> of <code>'unknown'</code> never overwrites a state the module already knows — that is how
+iOS keeps a callback-derived state instead of being reset on every refresh.</li>
+</ul>
+<p>Platform capabilities are summarised in the <a href="readme.html#state-semantics">README</a> and explained in
+the <a href="ios.html#why-state-is-limited-on-ios">iOS guide</a>.</p>
+<hr>
+<h2 id="events">Events</h2>
+<p>Each <code>add*Listener</code> returns an <code>Unsubscribe</code> function.</p>
+<h3 id="addstatelistenerlistener-unsubscribe"><code>addStateListener(listener): Unsubscribe</code></h3>
+<pre><code class="language-ts">interface AnyConnectStateChangeEvent {
+  state: AnyConnectState;
+  source: 'system' | 'callback' | 'request' | 'initial';
+  vpnTransportActive: boolean | null;
+  timestamp: string; // ISO 8601, added by the JS layer
+}
+</code></pre>
+<p>Only fires when the state actually changes — <code>state</code>, <code>vpnTransportActive</code> or <code>anyConnectInstalled</code>.
+Note that the event payload carries the first two plus <code>source</code> and <code>timestamp</code>; read
+<code>getState()</code> if you need the install flag too, which is what <code>useAnyConnect</code> does.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th><code>source</code></th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>system</code></td>
+<td>Observed from the platform (Android VPN transport, or <code>refresh()</code>).</td>
+</tr>
+<tr>
+<td><code>callback</code></td>
+<td>Derived from a URL AnyConnect opened.</td>
+</tr>
+<tr>
+<td><code>request</code></td>
+<td>Optimistic, set when the module dispatched an action.</td>
+</tr>
+<tr>
+<td><code>initial</code></td>
+<td>The starting value.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="addcallbacklistenerlistener-unsubscribe"><code>addCallbackListener(listener): Unsubscribe</code></h3>
+<pre><code class="language-ts">interface AnyConnectCallbackEvent {
+  action: 'connect' | 'disconnect' | 'unknown';
+  result: 'success' | 'error';
+  url: string;
+  token?: string;
+  error?: string;
+}
+</code></pre>
+<p>Fires only when a callback scheme is configured and reachable. <code>token</code> matches
+<code>AnyConnectDispatchResult.token</code> from the request that caused it.</p>
+<h3 id="addurlresultlistenerlistener-unsubscribe"><code>addUrlResultListener(listener): Unsubscribe</code></h3>
+<pre><code class="language-ts">interface AnyConnectUrlResultEvent {
+  action?: string;
+  url: string;
+  success: boolean;
+  error?: string;
+}
+</code></pre>
+<p>Low-level: fires whenever a URI is handed to the OS. The most useful signal here is
+<code>success: false</code>, which usually means AnyConnect is missing or its URI External Control is disabled.</p>
+<h3 id="handlecallbackurlurl-boolean"><code>handleCallbackUrl(url): boolean</code></h3>
+<p>Feeds a deep link into the module manually. Returns <code>true</code> when the URL was recognised as an
+AnyConnect callback and dispatched to listeners.</p>
+<pre><code class="language-ts">CiscoAnyConnect.configure({ autoWireDeepLinks: false });
+
+Linking.addEventListener('url', ({ url }) =&gt; {
+  if (!CiscoAnyConnect.handleCallbackUrl(url)) {
+    router.navigate(url); // your own deep link
+  }
+});
+</code></pre>
+<h3 id="getcallbackscheme-string-false"><code>getCallbackScheme(): string | false</code></h3>
+<p>The scheme AnyConnect will open to report outcomes. Useful in diagnostics screens and bug reports.</p>
+<h3 id="dispose-void"><code>dispose(): void</code></h3>
+<p>Removes every native and <code>Linking</code>/<code>AppState</code> subscription, and resets the tracked state, resolved
+scheme and initialisation promise. Intended for tests and teardown; the client is reusable
+afterwards, but <code>configure</code> must be called again.</p>
+<hr>
+<h2 id="react-hooks">React hooks</h2>
+<h3 id="useanyconnect-anyconnectstatesnapshot"><code>useAnyConnect(): AnyConnectStateSnapshot</code></h3>
+<p>Subscribes to state changes and calls <code>refresh()</code> once on mount.</p>
+<pre><code class="language-tsx">const { state, vpnTransportActive, anyConnectInstalled } = useAnyConnect();
+</code></pre>
+<h3 id="useanyconnectcallbacklistener-void"><code>useAnyConnectCallback(listener): void</code></h3>
+<p>Runs <code>listener</code> on every connection outcome. The latest listener is always called without
+re-subscribing.</p>
+<pre><code class="language-tsx">useAnyConnectCallback((event) =&gt; {
+  if (event.action === 'connect' &amp;&amp; event.result === 'error') showToast(event.error);
+});
+</code></pre>
+<hr>
+<h2 id="low-level-exports">Low-level exports</h2>
+<h3 id="isnativemoduleavailable-boolean"><code>isNativeModuleAvailable: boolean</code></h3>
+<p><code>false</code> in Expo Go, on the web, and under Jest. Use it to render a &quot;not supported here&quot; state without
+catching exceptions.</p>
+<h3 id="urihandlertransport-anyconnecttransport"><code>UriHandlerTransport</code>, <code>AnyConnectTransport</code></h3>
+<p>The shipped transport and the interface to implement for a different one. See
+<a href="architecture.html#the-transport-seam">Architecture</a>.</p>
+<h3 id="uri-helpers">URI helpers</h3>
+<p>All pure and unit tested. <code>encodeValue</code> and <code>parseCallbackUrl</code> are exported mainly so you can build
+and interpret <code>anyconnect://</code> links outside React Native (email, MDM, web).</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Export</th>
+<th>Signature</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>buildCreateConnectionUri</code></td>
+<td><code>(options: AnyConnectConnectionOptions) =&gt; string</code></td>
+<td><code>anyconnect://create/?…</code></td>
+</tr>
+<tr>
+<td><code>buildConnectUri</code></td>
+<td><code>(options: AnyConnectConnectOptions) =&gt; string</code></td>
+<td><code>anyconnect://connect/?…</code></td>
+</tr>
+<tr>
+<td><code>buildDisconnectUri</code></td>
+<td><code>(onSuccess?: string) =&gt; string</code></td>
+<td><code>anyconnect://disconnect</code></td>
+</tr>
+<tr>
+<td><code>buildImportProfileUri</code></td>
+<td><code>(uri: string) =&gt; string</code></td>
+<td><code>anyconnect://import/?type=profile&amp;…</code></td>
+</tr>
+<tr>
+<td><code>buildImportCertificateUri</code></td>
+<td><code>(options) =&gt; string</code></td>
+<td><code>anyconnect://import/?type=pkcs12&amp;…</code></td>
+</tr>
+<tr>
+<td><code>buildLocalizeUri</code></td>
+<td><code>(options) =&gt; string</code></td>
+<td><code>anyconnect://import/?type=localization&amp;…</code></td>
+</tr>
+<tr>
+<td><code>buildCloseUri</code></td>
+<td><code>() =&gt; string</code></td>
+<td><code>anyconnect://close</code></td>
+</tr>
+<tr>
+<td><code>buildCallbackUrl</code></td>
+<td><code>(scheme, params) =&gt; string</code></td>
+<td>Builds this module's own callback URL.</td>
+</tr>
+<tr>
+<td><code>parseCallbackUrl</code></td>
+<td><code>(url: string) =&gt; AnyConnectCallbackEvent | null</code></td>
+<td>Returns <code>null</code> for anything that is not a callback.</td>
+</tr>
+<tr>
+<td><code>connectionQueryParameters</code></td>
+<td><code>(options) =&gt; [string, string][]</code></td>
+<td>Ordered query parameters, pre-encoding.</td>
+</tr>
+<tr>
+<td><code>encodeValue</code></td>
+<td><code>(value: string, opts?) =&gt; string</code></td>
+<td>Percent-encoding with Cisco's quirks (<code>keepSlashes</code>).</td>
+</tr>
+<tr>
+<td><code>CALLBACK_PATH</code></td>
+<td><code>'anyconnect/callback'</code></td>
+<td>Path segment of this module's callback URLs.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="ciscoanyconnecterror-ciscoanyconnecterrorcode"><code>CiscoAnyConnectError</code> / <code>CiscoAnyConnectErrorCode</code></h3>
+<p>Every rejected promise is a <code>CiscoAnyConnectError</code> carrying a stable <code>code</code>.</p>
+<pre><code class="language-ts">import { CiscoAnyConnectError } from 'expo-cisco-anyconnect';
+
+try {
+  await CiscoAnyConnect.connect({ host });
+} catch (error) {
+  if (error instanceof CiscoAnyConnectError) {
+    switch (error.code) {
+      case 'NO_HANDLER': /* AnyConnect missing, or URI External Control disabled */
+      case 'INVALID_ARGUMENTS': /* bad call */
+      case 'NATIVE_MODULE_UNAVAILABLE': /* Expo Go / web */
+    }
+  }
+}
+</code></pre>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Raised when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NATIVE_MODULE_UNAVAILABLE</code></td>
+<td>The native module is not in this build (Expo Go, web).</td>
+</tr>
+<tr>
+<td><code>INVALID_ARGUMENTS</code></td>
+<td>Required input missing (<code>connect</code> without <code>host</code>/<code>name</code>, <code>createConnection</code> without <code>name</code>, …).</td>
+</tr>
+<tr>
+<td><code>NO_HANDLER</code></td>
+<td>The URI was dispatched but nothing claimed it.</td>
+</tr>
+</tbody>
+</table></div>
+<hr>
+<h2 id="type-exports">Type exports</h2>
+<p>All public types are exported from the package root:
+<code>AnyConnectAppInfo</code>, <code>AnyConnectAuthMode</code>, <code>AnyConnectCallbackEvent</code>,
+<code>AnyConnectConfigureOptions</code>, <code>AnyConnectConnectOptions</code>, <code>AnyConnectConnectionOptions</code>,
+<code>AnyConnectDispatchResult</code>, <code>AnyConnectImportCertificateOptions</code>, <code>AnyConnectLocalizeOptions</code>,
+<code>AnyConnectProtocol</code>, <code>AnyConnectState</code>, <code>AnyConnectStateChangeEvent</code>, <code>AnyConnectStateSnapshot</code>,
+<code>AnyConnectStateSource</code>, <code>AnyConnectTransport</code>, <code>AnyConnectUrlResultEvent</code>, <code>CiscoAnyConnectErrorCode</code>,
+<code>Unsubscribe</code>.</p>
+
+          <nav class="docs-pager" aria-label="Pagination"><a class="docs-pager__link docs-pager__link--prev" href="readme.html">
+          <span class="docs-pager__label">Previous</span>
+          <span class="docs-pager__title">Overview</span>
+        </a><a class="docs-pager__link docs-pager__link--next" href="architecture.html">
+          <span class="docs-pager__label">Next</span>
+          <span class="docs-pager__title">Architecture</span>
+        </a></nav>
+          <p class="docs-edit"><a href="https://github.com/403access/cisco-anyconnect/blob/main/docs/api.md" target="_blank" rel="noreferrer noopener">Edit this page on GitHub</a></p>
+        </article>
+
+        <aside class="docs-toc" aria-label="On this page">
+          <p class="docs-toc__title">On this page</p>
+      <ul>
+        <li class="docs-toc__level-2"><a href="#configureoptions" title="configure(options?)">configure(options?)</a></li>
+        <li class="docs-toc__level-2"><a href="#transport" title="Transport">Transport</a></li>
+        <li class="docs-toc__level-3"><a href="#settransporttransport" title="setTransport(transport)">setTransport(transport)</a></li>
+        <li class="docs-toc__level-3"><a href="#transportid-string" title="transportId: string">transportId</a></li>
+        <li class="docs-toc__level-2"><a href="#availability" title="Availability">Availability</a></li>
+        <li class="docs-toc__level-3"><a href="#isinstalled-promiseboolean" title="isInstalled(): Promise&lt;boolean&gt;">isInstalled()</a></li>
+        <li class="docs-toc__level-3"><a href="#getappinfo-promiseanyconnectappinfo-null" title="getAppInfo(): Promise&lt;AnyConnectAppInfo | null&gt;">getAppInfo()</a></li>
+        <li class="docs-toc__level-2"><a href="#actions" title="Actions">Actions</a></li>
+        <li class="docs-toc__level-3"><a href="#createconnectionoptions-promiseanyconnectdispatchresult" title="createConnection(options): Promise&lt;AnyConnectDispatchResult&gt;">createConnection(options)</a></li>
+        <li class="docs-toc__level-3"><a href="#connectoptions-promiseanyconnectdispatchresult" title="connect(options): Promise&lt;AnyConnectDispatchResult&gt;">connect(options)</a></li>
+        <li class="docs-toc__level-3"><a href="#disconnect-promiseanyconnectdispatchresult" title="disconnect(): Promise&lt;AnyConnectDispatchResult&gt;">disconnect()</a></li>
+        <li class="docs-toc__level-3"><a href="#importprofileurl-promiseanyconnectdispatchresult" title="importProfile(url): Promise&lt;AnyConnectDispatchResult&gt;">importProfile(url)</a></li>
+        <li class="docs-toc__level-3"><a href="#importcertificateoptions-promiseanyconnectdispatchresult" title="importCertificate(options): Promise&lt;AnyConnectDispatchResult&gt;">importCertificate(options)</a></li>
+        <li class="docs-toc__level-3"><a href="#localizeoptions-promiseanyconnectdispatchresult" title="localize(options): Promise&lt;AnyConnectDispatchResult&gt;">localize(options)</a></li>
+        <li class="docs-toc__level-3"><a href="#closegui-promiseanyconnectdispatchresult" title="closeGui(): Promise&lt;AnyConnectDispatchResult&gt;">closeGui()</a></li>
+        <li class="docs-toc__level-3"><a href="#anyconnectconnectionoptions" title="AnyConnectConnectionOptions">AnyConnectConnectionOptions</a></li>
+        <li class="docs-toc__level-3"><a href="#anyconnectconnectoptions" title="AnyConnectConnectOptions">AnyConnectConnectOptions</a></li>
+        <li class="docs-toc__level-2"><a href="#state" title="State">State</a></li>
+        <li class="docs-toc__level-3"><a href="#getstate-anyconnectstatesnapshot" title="getState(): AnyConnectStateSnapshot">getState()</a></li>
+        <li class="docs-toc__level-3"><a href="#refresh-promiseanyconnectstatesnapshot" title="refresh(): Promise&lt;AnyConnectStateSnapshot&gt;">refresh()</a></li>
+        <li class="docs-toc__level-2"><a href="#events" title="Events">Events</a></li>
+        <li class="docs-toc__level-3"><a href="#addstatelistenerlistener-unsubscribe" title="addStateListener(listener): Unsubscribe">addStateListener(listener)</a></li>
+        <li class="docs-toc__level-3"><a href="#addcallbacklistenerlistener-unsubscribe" title="addCallbackListener(listener): Unsubscribe">addCallbackListener(listener)</a></li>
+        <li class="docs-toc__level-3"><a href="#addurlresultlistenerlistener-unsubscribe" title="addUrlResultListener(listener): Unsubscribe">addUrlResultListener(listener)</a></li>
+        <li class="docs-toc__level-3"><a href="#handlecallbackurlurl-boolean" title="handleCallbackUrl(url): boolean">handleCallbackUrl(url)</a></li>
+        <li class="docs-toc__level-3"><a href="#getcallbackscheme-string-false" title="getCallbackScheme(): string | false">getCallbackScheme()</a></li>
+        <li class="docs-toc__level-3"><a href="#dispose-void" title="dispose(): void">dispose()</a></li>
+        <li class="docs-toc__level-2"><a href="#react-hooks" title="React hooks">React hooks</a></li>
+        <li class="docs-toc__level-3"><a href="#useanyconnect-anyconnectstatesnapshot" title="useAnyConnect(): AnyConnectStateSnapshot">useAnyConnect()</a></li>
+        <li class="docs-toc__level-3"><a href="#useanyconnectcallbacklistener-void" title="useAnyConnectCallback(listener): void">useAnyConnectCallback(listener)</a></li>
+        <li class="docs-toc__level-2"><a href="#low-level-exports" title="Low-level exports">Low-level exports</a></li>
+        <li class="docs-toc__level-3"><a href="#isnativemoduleavailable-boolean" title="isNativeModuleAvailable: boolean">isNativeModuleAvailable</a></li>
+        <li class="docs-toc__level-3"><a href="#urihandlertransport-anyconnecttransport" title="UriHandlerTransport, AnyConnectTransport">UriHandlerTransport, AnyConnectTransport</a></li>
+        <li class="docs-toc__level-3"><a href="#uri-helpers" title="URI helpers">URI helpers</a></li>
+        <li class="docs-toc__level-3"><a href="#ciscoanyconnecterror-ciscoanyconnecterrorcode" title="CiscoAnyConnectError / CiscoAnyConnectErrorCode">CiscoAnyConnectError / CiscoAnyConnectErrorCode</a></li>
+        <li class="docs-toc__level-2"><a href="#type-exports" title="Type exports">Type exports</a></li>
+      </ul>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer__legal">
+          <span>
+            Not affiliated with, endorsed by, or sponsored by Cisco Systems, Inc. AnyConnect and Cisco
+            Secure Client are trademarks of Cisco Systems, Inc.
+          </span>
+          <span>MIT © <span data-year>2026</span></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

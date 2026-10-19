@@ -1,0 +1,13 @@
+{
+  "name": "expo-cisco-anyconnect-website",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Static site for expo-cisco-anyconnect. Markdown docs are pre-rendered into HTML.",
+  "scripts": {
+    "build": "node build-docs.mjs",
+    "check": "python3 check.py"
+  },
+  "devDependencies": {
+    "markdown-it": "^14.1.0"
+  }
+}

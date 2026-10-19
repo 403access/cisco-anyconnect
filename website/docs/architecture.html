@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Architecture · expo-cisco-anyconnect</title>
+    <meta name="description" content="Layers, the connect and callback flows, and the state machine." />
+    <meta name="theme-color" content="#07090c" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../styles.css" />
+    <link rel="stylesheet" href="../docs.css" />
+    <script defer src="../main.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header" data-header>
+      <div class="container site-header__inner">
+        <a class="brand" href="../index.html" aria-label="expo-cisco-anyconnect home">
+          <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true">
+  <defs><linearGradient id="brandGrad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#a78bfa"/>
+  </linearGradient></defs>
+  <rect width="32" height="32" rx="9" fill="url(#brandGrad)"/>
+  <path d="M16 7.4l6.4 2.9v5.4c0 3.9-2.6 7-6.4 8-3.8-1-6.4-4.1-6.4-8v-5.4L16 7.4z"
+        fill="none" stroke="#04121a" stroke-width="1.9" stroke-linejoin="round"/>
+  <path d="M13.3 15.9l2.1 2.1 3.5-4" fill="none" stroke="#04121a" stroke-width="1.9"
+        stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+          <span class="brand__text">expo-cisco-anyconnect</span>
+        </a>
+
+        <button class="nav-toggle" type="button" data-nav-toggle aria-expanded="false"
+          aria-controls="site-nav" aria-label="Toggle navigation"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+  stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+
+        <nav class="nav" id="site-nav" data-nav aria-label="Primary">
+          <a href="../index.html#capabilities">Capabilities</a>
+          <a href="../index.html#screenshots">Screenshots</a>
+          <a href="../index.html#usage">Usage</a>
+          <a href="index.html">Docs</a>
+          <a class="nav__cta" href="https://github.com/403access/cisco-anyconnect" target="_blank" rel="noreferrer noopener">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+  <path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.1-1.47-1.1-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2z"/>
+</svg>
+            GitHub
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <div class="container docs-shell">
+        <aside class="docs-sidebar">
+          <nav aria-label="Documentation">
+            <p class="docs-sidebar__group">Guide</p>
+        <ul>
+          <li><a href="readme.html">Overview</a></li>
+          <li><a href="api.html">API reference</a></li>
+          <li><a href="architecture.html" aria-current="page" class="is-active">Architecture</a></li>
+          <li><a href="example.html">Example app</a></li>
+        </ul>
+        <p class="docs-sidebar__group">Platforms</p>
+        <ul>
+          <li><a href="android.html">Android guide</a></li>
+          <li><a href="ios.html">iOS guide</a></li>
+          <li><a href="config-plugin.html">Config plugin</a></li>
+          <li><a href="troubleshooting.html">Troubleshooting</a></li>
+        </ul>
+        <p class="docs-sidebar__group">Project</p>
+        <ul>
+          <li><a href="development.html">Development</a></li>
+          <li><a href="contributing.html">Contributing</a></li>
+          <li><a href="changelog.html">Changelog</a></li>
+        </ul>
+          </nav>
+          <p class="docs-sidebar__back"><a href="../index.html">← Back to the project</a></p>
+        </aside>
+
+        <article class="prose" id="content">
+          <p class="docs-eyebrow">Documentation</p>
+          <h1 id="architecture">Architecture</h1>
+<h2 id="the-constraint-that-shapes-everything">The constraint that shapes everything</h2>
+<p>Cisco publishes no embeddable AnyConnect SDK. Putting the tunnel inside your own app requires the
+partner SDK (NDA + paid licence) and, on iOS, Apple's <code>packet-tunnel-provider</code> entitlement. The only
+public automation surface is the <code>anyconnect://</code> URI handler, which is:</p>
+<ul>
+<li><strong>fire-and-forget</strong> — dispatching a URI returns nothing;</li>
+<li><strong>user-visible</strong> — AnyConnect shows its own UI;</li>
+<li><strong>asynchronous</strong> — the outcome arrives later, if at all.</li>
+</ul>
+<p>So this package is a <strong>controller</strong>, not a tunnel. Everything below follows from making an
+unreliable, out-of-process, asynchronous interface behave like a normal API.</p>
+<h2 id="layers">Layers</h2>
+<pre><code>┌──────────────────────────────────────────────────────────────┐
+│ Your app                                                     │
+│   CiscoAnyConnect.connect()  ·  useAnyConnect()  ·  events   │
+└───────────────────────────┬──────────────────────────────────┘
+                            │
+┌───────────────────────────▼──────────────────────────────────┐
+│ Facade — src/CiscoAnyConnect.ts                              │
+│   state machine · listener registry · callback-scheme        │
+│   resolution · Linking/AppState wiring · URL interpretation  │
+└───────────────────────────┬──────────────────────────────────┘
+                            │  AnyConnectTransport (seam)
+┌───────────────────────────▼──────────────────────────────────┐
+│ Transport — src/transport.ts                                 │
+│   UriHandlerTransport: builds the anyconnect:// URI          │
+│   (a Cisco SDK or in-process tunnel would implement here)    │
+└───────────────────────────┬──────────────────────────────────┘
+                            │  native primitives
+┌───────────────────────────▼──────────────────────────────────┐
+│ Native module — ios/ + android/                              │
+│   isInstalled · getAppInfo · canOpenUrl · openUrl            │
+│   getAppUrlSchemes · getState · consumePendingCallbackUrls   │
+│   + events: state change, captured callback URL, URL result  │
+└───────────────────────────┬──────────────────────────────────┘
+                            │
+        ┌───────────────────┴───────────────────┐
+        ▼                                       ▼
+   OS deep-link routing                  ConnectivityManager /
+   (Intent / UIViewcontroller)           UIApplication
+        │                                       │
+        └──────────────► Cisco Secure Client ◄───┘
+</code></pre>
+<p>A deliberate split runs through this: <strong>the native layer does only what JavaScript cannot.</strong> It
+probes for the app, opens URLs, reads the app's own registered schemes, observes the system VPN
+transport, and captures incoming intents. Everything protocol-shaped — URI construction, callback
+URL parsing, state transitions — lives in TypeScript, where it is a pure function and is unit tested.</p>
+<h2 id="the-transport-seam">The transport seam</h2>
+<p><code>AnyConnectTransport</code> exists so the choice of integration surface is not baked into the public API.</p>
+<pre><code>AnyConnectTransport
+├── id: string
+├── isAvailable() / getAppInfo()
+├── createConnection / connect / disconnect
+├── importProfile / importCertificate / localize
+├── closeGui
+└── dispose?()
+</code></pre>
+<p><code>UriHandlerTransport</code> is the shipped implementation. A <code>CiscoSdkTransport</code> or
+<code>TunnelProviderTransport</code> implements the same interface; callers then use
+<code>CiscoAnyConnect.setTransport(...)</code> and nothing else changes — including the events, since the facade
+owns state regardless of which transport produced it.</p>
+<p>The transport receives one injected dependency: a <code>resolveCallbackScheme()</code> callback. That is the
+only piece of the facade it needs, which keeps it testable in isolation.</p>
+<h2 id="connect-flow">Connect flow</h2>
+<figure class="diagram"><figcaption>Diagram — Mermaid source</figcaption><pre class="diagram__body"><code>sequenceDiagram
+    participant App
+    participant Facade as CiscoAnyConnect (JS)
+    participant Native
+    participant OS
+    participant AC as AnyConnect
+
+    App-&gt;&gt;Facade: connect({ host })
+    activate Facade
+    Facade-&gt;&gt;Facade: ensureInitialised()&lt;br/&gt;resolve scheme, attach listeners
+    Facade-&gt;&gt;Facade: build URI with onsuccess/onerror → myapp://anyconnect/callback
+    Facade-&gt;&gt;Native: openUrl(uri)
+    Native-&gt;&gt;OS: canOpenURL / resolveActivity
+    Native-&gt;&gt;OS: openURL / startActivity
+    Native--&gt;&gt;Facade: dispatched
+    Facade--&gt;&gt;App: { url, dispatched, token }
+    deactivate Facade
+    Facade-&gt;&gt;Facade: state = 'connecting' (source: request)
+
+    OS-&gt;&gt;AC: launch / resume, hand over the URI
+    AC-&gt;&gt;AC: authenticate, establish tunnel
+    Note over Native: Android only: system VPN transport comes up
+    Native--&gt;&gt;Facade: onAnyConnectStateChange → 'connected'
+    Facade--&gt;&gt;App: state change (source: system)
+
+    AC-&gt;&gt;OS: open onsuccess URL
+    OS-&gt;&gt;App: deep link myapp://anyconnect/callback?…
+    App-&gt;&gt;Facade: Linking 'url' / native onAnyConnectCallbackUrl
+    Facade-&gt;&gt;Facade: parseCallbackUrl()
+    Facade--&gt;&gt;App: callback event + state change (source: callback)
+</code></pre></figure>
+<p>Steps, in words:</p>
+<ol>
+<li><code>connect()</code> triggers lazy initialisation: the callback scheme is resolved, native listeners are
+attached, any callback URLs captured natively are drained, and <code>Linking</code>/<code>AppState</code> are wired.</li>
+<li>The transport builds <code>anyconnect://connect/?…</code> with <code>onsuccess</code> and <code>onerror</code> percent-encoded URLs
+pointing at <code>&lt;scheme&gt;://anyconnect/callback</code>, carrying an opaque <code>token</code>.</li>
+<li><code>openUrl</code> hands the URI to the OS. Android uses <code>ACTION_VIEW</code> from the <em>current activity</em> so the
+app does not need <code>FLAG_ACTIVITY_NEW_TASK</code>; iOS pre-checks <code>canOpenURL</code> before <code>UIApplication.open</code>.</li>
+<li>The facade optimistically moves to <code>connecting</code> (<code>source: 'request'</code>) and returns the dispatch
+result, so the caller can show feedback immediately.</li>
+<li>AnyConnect connects and opens the callback URL, which routes back into your app.</li>
+<li>The facade parses the URL, moves the state, and emits both a callback event and a state event.</li>
+</ol>
+<h2 id="callback-routing">Callback routing</h2>
+<p>The interesting platform difference is step 5–6.</p>
+<p><strong>Android</strong> captures the URL natively. <code>OnNewIntent</code> handles a running app; the launch intent is read
+in <code>OnCreate</code> for a cold start. Captured URLs are queued <em>and</em> emitted, so neither case is lost —
+the queue exists because a cold-start link arrives before any JS listener exists, and is drained
+during initialisation and whenever the app returns to the foreground.</p>
+<p><strong>iOS</strong> cannot hook URL delivery from inside an Expo module, so the module subscribes to React
+Native's core <code>Linking</code> (not <code>expo-linking</code> — no extra dependency) and to <code>AppState</code>. That is why
+<code>autoWireDeepLinks</code> exists, and why <code>handleCallbackUrl</code> is public: if your app already owns URL
+handling, turn auto-wiring off and forward links yourself.</p>
+<p>Both paths converge on <code>parseCallbackUrl</code>, which requires an exact path match and rejects
+host-style URLs, so unrelated deep links are ignored rather than misreported.</p>
+<h2 id="state-machine">State machine</h2>
+<pre><code>             connect()                 system/callback
+  disconnected ────────► connecting ──────────────────► connected
+       ▲                     │                              │
+       │                     │ callback(error)              │
+       │                     ▼                              │
+       │                disconnected                        │
+       │                                                    │
+       │      disconnect()          callback / system       │
+       └──────────────── disconnecting ◄────────────────────┘
+</code></pre>
+<p>Sources, and why they matter:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th><code>source</code></th>
+<th>Set by</th>
+<th>Trust</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>request</code></td>
+<td>dispatching an action</td>
+<td>Intent, not fact.</td>
+</tr>
+<tr>
+<td><code>system</code></td>
+<td>Android VPN transport, or <code>refresh()</code></td>
+<td>Observed fact.</td>
+</tr>
+<tr>
+<td><code>callback</code></td>
+<td>a URL from AnyConnect</td>
+<td>Observed fact (per-connection).</td>
+</tr>
+<tr>
+<td><code>initial</code></td>
+<td>first snapshot</td>
+<td>Starting value.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Two rules keep this honest:</p>
+<ul>
+<li><strong><code>refresh()</code> never lets <code>unknown</code> overwrite a known state</strong>, so iOS keeps a callback-derived state
+instead of being reset on every foreground.</li>
+<li><strong>Foreground does not call <code>refresh()</code></strong> — only drains callbacks. Polling on resume would clobber
+an in-flight <code>connecting</code> with a <code>disconnected</code> reading taken before the tunnel came up.</li>
+</ul>
+<p>On Android the transport observation is authoritative and available even when the user connected
+from outside your app. It cannot attribute the tunnel to AnyConnect specifically; there is no public
+API for that. On iOS no observation is possible, so the module reports <code>unknown</code> and <code>null</code> rather
+than inventing a value.</p>
+<h2 id="why-not-the-android-aidl-service-api">Why not the Android AIDL service API</h2>
+<p>Some Cisco integrations use a bound AIDL service on Android. It is not publicly documented for
+general third-party use, and it requires the calling package to be allow-listed in the AnyConnect
+profile. That is a partner/MDM arrangement, not something a distributed npm package can assume.
+The URI handler works for everyone, so it is the default; the transport seam is where an AIDL
+implementation would go if your fleet is provisioned for it.</p>
+<h2 id="file-map">File map</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Responsibility</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>src/index.ts</code></td>
+<td>Public export surface.</td>
+</tr>
+<tr>
+<td><code>src/CiscoAnyConnect.ts</code></td>
+<td>Facade: state machine, listeners, scheme resolution, deep-link wiring.</td>
+</tr>
+<tr>
+<td><code>src/transport.ts</code></td>
+<td><code>AnyConnectTransport</code> + <code>UriHandlerTransport</code>.</td>
+</tr>
+<tr>
+<td><code>src/uri.ts</code></td>
+<td>Pure <code>anyconnect://</code> builders and callback parser. No native dependency.</td>
+</tr>
+<tr>
+<td><code>src/CiscoAnyConnectModule.ts</code></td>
+<td>Native module binding; optional so imports never throw.</td>
+</tr>
+<tr>
+<td><code>src/CiscoAnyConnectModule.web.ts</code></td>
+<td>Web stub (unsupported, degrades cleanly).</td>
+</tr>
+<tr>
+<td><code>src/CiscoAnyConnectError.ts</code></td>
+<td>Error class with stable codes.</td>
+</tr>
+<tr>
+<td><code>src/CiscoAnyConnect.types.ts</code></td>
+<td>All public types.</td>
+</tr>
+<tr>
+<td><code>src/useAnyConnect.ts</code></td>
+<td>React hooks.</td>
+</tr>
+<tr>
+<td><code>ios/AnyConnectDetector.swift</code></td>
+<td>Availability, scheme discovery, URL dispatch (UIKit only).</td>
+</tr>
+<tr>
+<td><code>ios/CiscoAnyConnectModule.swift</code></td>
+<td>Expo module definition.</td>
+</tr>
+<tr>
+<td><code>android/…/AnyConnectDetector.kt</code></td>
+<td>Availability, package metadata, scheme discovery, dispatch.</td>
+</tr>
+<tr>
+<td><code>android/…/VpnStateObserver.kt</code></td>
+<td>System VPN transport observation.</td>
+</tr>
+<tr>
+<td><code>android/…/CiscoAnyConnectModule.kt</code></td>
+<td>Expo module definition + callback URL capture.</td>
+</tr>
+<tr>
+<td><code>plugin/src/index.ts</code></td>
+<td>Config plugin writing Info.plist / AndroidManifest.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="testing-strategy">Testing strategy</h2>
+<p>The architecture is arranged so the risky logic is testable without a device:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>How it is verified</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>uri.ts</code></td>
+<td>Unit tests pinning Cisco's exact wire format, including encoding quirks.</td>
+</tr>
+<tr>
+<td>Facade</td>
+<td>Unit tests against a missing native module — the Expo Go / web path, plus state transitions and event emission.</td>
+</tr>
+<tr>
+<td>Config plugin</td>
+<td>Run through Expo's real mod chain; the resulting <code>Info.plist</code> and <code>AndroidManifest</code> are asserted.</td>
+</tr>
+<tr>
+<td>Native</td>
+<td><code>swiftc -parse</code> for syntax; behaviour is exercised through the example app.</td>
+</tr>
+</tbody>
+</table></div>
+<p>See <a href="development.html">DEVELOPMENT.md</a> for commands.</p>
+
+          <nav class="docs-pager" aria-label="Pagination"><a class="docs-pager__link docs-pager__link--prev" href="api.html">
+          <span class="docs-pager__label">Previous</span>
+          <span class="docs-pager__title">API reference</span>
+        </a><a class="docs-pager__link docs-pager__link--next" href="android.html">
+          <span class="docs-pager__label">Next</span>
+          <span class="docs-pager__title">Android guide</span>
+        </a></nav>
+          <p class="docs-edit"><a href="https://github.com/403access/cisco-anyconnect/blob/main/docs/architecture.md" target="_blank" rel="noreferrer noopener">Edit this page on GitHub</a></p>
+        </article>
+
+        <aside class="docs-toc" aria-label="On this page">
+          <p class="docs-toc__title">On this page</p>
+      <ul>
+        <li class="docs-toc__level-2"><a href="#the-constraint-that-shapes-everything" title="The constraint that shapes everything">The constraint that shapes everything</a></li>
+        <li class="docs-toc__level-2"><a href="#layers" title="Layers">Layers</a></li>
+        <li class="docs-toc__level-2"><a href="#the-transport-seam" title="The transport seam">The transport seam</a></li>
+        <li class="docs-toc__level-2"><a href="#connect-flow" title="Connect flow">Connect flow</a></li>
+        <li class="docs-toc__level-2"><a href="#callback-routing" title="Callback routing">Callback routing</a></li>
+        <li class="docs-toc__level-2"><a href="#state-machine" title="State machine">State machine</a></li>
+        <li class="docs-toc__level-2"><a href="#why-not-the-android-aidl-service-api" title="Why not the Android AIDL service API">Why not the Android AIDL service API</a></li>
+        <li class="docs-toc__level-2"><a href="#file-map" title="File map">File map</a></li>
+        <li class="docs-toc__level-2"><a href="#testing-strategy" title="Testing strategy">Testing strategy</a></li>
+      </ul>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer__legal">
+          <span>
+            Not affiliated with, endorsed by, or sponsored by Cisco Systems, Inc. AnyConnect and Cisco
+            Secure Client are trademarks of Cisco Systems, Inc.
+          </span>
+          <span>MIT © <span data-year>2026</span></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
